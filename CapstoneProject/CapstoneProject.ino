@@ -10,6 +10,10 @@ Castone Project
 #include <SoftwareSerial.h>
 
 int baudRate = 9600;
+unsigned long lastSerial = 0;
+
+#define SET_PERIOD 10
+#define READ_SENSORS_PERIOD   1000*SET_PERIOD
 
 void setup() 
 {
@@ -22,22 +26,24 @@ void setup()
 // the loop function runs over and over again forever
 void loop() 
 {
-//    blinkOnOff();
+  if (millis() - lastSerial >= READ_SENSORS_PERIOD)
+  {
+    lastSerial = millis();
+    Serial.println(lastSerial);    //prints time since program started
 
     //soil humidity
     analogReadHumidity();
     analogWriteHumidity();
-
+  
     //temperature
     analogReadTemperature();
     analogWriteTemperature();
-
+  
     //light
     analogReadLight();
     analogWriteLight();
+  }
+  bluetooth();
+  bluetoothSerial();
 
-    bluetooth();
-    bluetoothSerial();
-    
-    Serial.println("\n");
 }
