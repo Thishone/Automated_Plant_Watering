@@ -3,6 +3,7 @@
 #include <Wstring.h>
 #include "blinkLed.h"
 #include "bluetooth.h"
+#include "waterPump.h"
 
 #define BTserialRX 5
 #define BTserialTX 6
@@ -10,12 +11,9 @@
 #define TX 1
 
 SoftwareSerial BTserial(BTserialRX,BTserialTX);
-//char incomingData = 0;            //Variable for storing received data
-String incomingData = ""; 
-int avail = 0;
-String Temperature = "Temperature";
-String PercentageHumidity = "PercentageHumidity";
-String MeasuredLux = "MeasuredLux";
+         
+String readData = ""; //Variable for storing received data
+String BTserial_readData = ""; //Variable for storing received data
 
 
 /////////////////////////////////////////////////////////////////
@@ -38,22 +36,28 @@ void bluetoothSetup(void)
 /////////////////////////////////////////////////////////////////
 void bluetooth(void)
 {
-  Serial.println("Bluetooth:");
   if(Serial.available() > 0)      // Send data only when you receive data:
   {
     while(Serial.available()){
-      incomingData += (char)Serial.read();        //Read the incoming data & store into data
+      readData += (char)Serial.read();        //Read the incoming data & store into data
+      delay(500);
     }
     Serial.println("Bluetooth incoming data:");
-    Serial.println(incomingData);          //Print Value inside data in Serial monitor
-    Serial.print("\n");        
-    if(incomingData == "on")              // Checks whether value of data is equal to 1
+    Serial.println(readData);          //Print Value inside data in Serial monitor
+    Serial.print("\n");
+       
+    if(readData == "on")              // Checks whether value of data is equal to 1
+    {
       ledOn();   //If value is 1 then LED turns ON
-    else if(incomingData == "off")         //  Checks whether value of data is equal to 0
+      waterPumpOn();
+    }
+    else if(readData == "off")         //  Checks whether value of data is equal to 0
+    {
       ledOff();    //If value is 0 then LED turns OFF
+      waterPumpOff();
+    }
 
-    incomingData = "";
-    delay(500);
+    readData = "";
   }
 }
 
@@ -65,13 +69,14 @@ void bluetooth(void)
 /////////////////////////////////////////////////////////////////
 void bluetoothSerial(void)
 {
-  Serial.println("bluetoothSerial:");
   BTserial.begin(9600);
   BTserial.print("AT");
   if(BTserial.available() > 0)
   {
-    char aChar = BTserial.read();
-    Serial.print(aChar);
+    Serial.println("bluetoothSerial incoming data:");
+    BTserial_readData = (char)BTserial.read();
+    Serial.print(BTserial_readData);
+
+    BTserial_readData = "";
   }
-  delay(500);
 }
