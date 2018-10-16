@@ -12,7 +12,7 @@ Castone Project
 int baudRate = 9600;
 unsigned long lastSerial = 0;
 
-#define SET_PERIOD 10
+#define SET_PERIOD 2
 #define READ_SENSORS_PERIOD   1000*SET_PERIOD
 
 void setup() 
@@ -29,19 +29,19 @@ void loop()
   if (millis() - lastSerial >= READ_SENSORS_PERIOD)
   {
     lastSerial = millis();
-    Serial.println(lastSerial);    //prints time since program started
+    //Serial.println(lastSerial);    //prints time since program started
 
-    //soil humidity
-    analogReadHumidity();
-    analogWriteHumidity();
+    //soil Moisture
+    analogReadMoisture();
+    //analogWriteMoisture();
   
     //temperature
     analogReadTemperature();
-    analogWriteTemperature();
+    //analogWriteTemperature();
   
     //light
     analogReadLight();
-    analogWriteLight();
+    //analogWriteLight(); 
   }
   bluetooth();
   bluetoothSerial();

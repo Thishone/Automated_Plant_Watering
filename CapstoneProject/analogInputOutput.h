@@ -4,10 +4,10 @@
 extern "C" {
 #endif
 
-// Soil Humidity Sensor
-extern int analogReadHumidityValue;
-void analogReadHumidity(void);
-void analogWriteHumidity(void);
+// Soil Moisture Sensor
+extern int analogReadMoistureValue;
+void analogReadMoisture(void);
+void analogWriteMoisture(void);
 
 // Temperature Sensor
 extern int analogReadTemperatureValue;
