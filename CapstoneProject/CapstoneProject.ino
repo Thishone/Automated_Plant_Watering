@@ -32,16 +32,16 @@ void loop()
     //Serial.println(lastSerial);    //prints time since program started
 
     //soil Moisture
-    analogReadMoisture();
-    //analogWriteMoisture();
+    ReadMoisture();
+    //WriteMoisture();
   
     //temperature
-    analogReadTemperature();
-    //analogWriteTemperature();
+    ReadTemperature();
+    //WriteTemperature();
   
     //light
-    analogReadLight();
-    //analogWriteLight(); 
+    ReadLight();
+    //WriteLight(); 
   }
   bluetooth();
   bluetoothSerial();

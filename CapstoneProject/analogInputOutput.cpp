@@ -12,42 +12,42 @@
 //Max raw value for 100% moisture is 800.
 #define MAX_MOISTURE_VALUE 800.0
 
-//Turn on Water Pump 
-#define TRUR_ON_PUMP_THRESHOLD_VALUE 35.0
+//Turn on/off Water Pump 
+#define WATER_PUMP_THRESHOLD_VALUE 35.0
 
 int soilMoistureRawVal = 0;
 float soilMoisturePercentage = 0;
 
-int analogReadMoisturePin = 0;     // connected to analog pin 0
+int ReadMoisturePin = 0;     // connected to analog pin 0
                                    // outside leads to ground and +5V
-int analogWriteMoisturePin = 8; 
-int analogReadMoistureValue = 0;   // variable to store the value read
+int WriteMoisturePin = 8; 
+int ReadMoistureValue = 0;   // variable to store the value read
 
 // Data of Temperature Sensor 
-int analogReadTemperaturePin = 1;     // connected to analog pin 1
+int ReadTemperaturePin = 1;     // connected to analog pin 1
 
-int analogWriteTemperaturePin = 9; 
-int analogReadTemperatureValue = 0;   // variable to store the value read
+int WriteTemperaturePin = 9; 
+int ReadTemperatureValue = 0;   // variable to store the value read
 
 // Data of Light Sensor 
-int analogReadLightPin = 2;     // connected to analog pin 1
+int ReadLightPin = 2;     // connected to analog pin 1
 
-int analogWriteLightPin = 10; 
-int analogReadLightValue = 0;   // variable to store the value read
+int WriteLightPin = 10; 
+int ReadLightValue = 0;   // variable to store the value read
 
-char buffer[60]; // store messages
+char sprintfBuffer[60]; // store messages
 
 /////////////////////////////////////////////////////////////////
-// FUNCTION      : analogReadMoisture()
+// FUNCTION      : ReadMoisture()
 // DESCRIPTION   : This function reads the value of soil Moisture
 // PARAMETERS   :   
 // RETURNS       : none
 /////////////////////////////////////////////////////////////////
-void analogReadMoisture(void)
+void ReadMoisture(void)
 {
-  analogReadMoistureValue = analogRead(analogReadMoisturePin);     // read the input pin
+  ReadMoistureValue = analogRead(ReadMoisturePin);     // read the input pin
 
-  soilMoistureRawVal = MAX_INTEGER_VOLT_VALUE - analogReadMoistureValue;
+  soilMoistureRawVal = MAX_INTEGER_VOLT_VALUE - ReadMoistureValue;
 
   Serial.println("Moisture Value:");
   Serial.println(soilMoistureRawVal);
@@ -55,11 +55,11 @@ void analogReadMoisture(void)
   if (soilMoistureRawVal < MAX_MOISTURE_VALUE)
   {
     soilMoisturePercentage = ((float)soilMoistureRawVal / MAX_MOISTURE_VALUE)*100.0;
-    sprintf (buffer, "Soil Moisture Percentage: %d%c \n",(int)soilMoisturePercentage,PERCENT);
-    Serial.print (buffer);
+    sprintf (sprintfBuffer, "Soil Moisture Percentage: %d%c \n",(int)soilMoisturePercentage,PERCENT);
+    Serial.print (sprintfBuffer);
   }
 
-  if (soilMoisturePercentage <= TRUR_ON_PUMP_THRESHOLD_VALUE){
+  if (soilMoisturePercentage <= WATER_PUMP_THRESHOLD_VALUE){
       Serial.println(" => Turn on Water Pump");
       ledOn();
       waterPumpOn();
@@ -74,65 +74,65 @@ void analogReadMoisture(void)
 }
 
 /////////////////////////////////////////////////////////////////
-// FUNCTION      : analogWriteMoisture()
+// FUNCTION      : WriteMoisture()
 // DESCRIPTION   : This function writes the value of soil Moisture
 // PARAMETERS   :   
 // RETURNS       : none
 /////////////////////////////////////////////////////////////////
-void analogWriteMoisture(void)
+void WriteMoisture(void)
 {
-  analogWrite(analogWriteMoisturePin, analogReadMoistureValue);
+  analogWrite(WriteMoisturePin, ReadMoistureValue);
   delay(500);
 }
 
 /////////////////////////////////////////////////////////////////
-// FUNCTION      : analogReadTemperature()
+// FUNCTION      : ReadTemperature()
 // DESCRIPTION   : This function reads the value of soil temperature
 // PARAMETERS   :   
 // RETURNS       : none
 /////////////////////////////////////////////////////////////////
-void analogReadTemperature(void)
+void ReadTemperature(void)
 {
-  analogReadTemperatureValue = analogRead(analogReadTemperaturePin);     // read the input pi
+  ReadTemperatureValue = analogRead(ReadTemperaturePin);     // read the input pi
 //  Serial.println("Temperature Value:");
-//  Serial.println(analogReadTemperatureValue);             // debug value
+//  Serial.println(ReadTemperatureValue);             // debug value
   delay(500);
 }
 
 /////////////////////////////////////////////////////////////////
-// FUNCTION      : analogWriteTemperature()
+// FUNCTION      : WriteTemperature()
 // DESCRIPTION   : This function writes the value of temperature
 // PARAMETERS   :   
 // RETURNS       : none
 /////////////////////////////////////////////////////////////////
-void analogWriteTemperature(void)
+void WriteTemperature(void)
 {
-  analogWrite(analogWriteTemperaturePin, analogReadTemperatureValue);
+  analogWrite(WriteTemperaturePin, ReadTemperatureValue);
   delay(500);
 }
 
 /////////////////////////////////////////////////////////////////
-// FUNCTION      : analogReadLight()
+// FUNCTION      : ReadLight()
 // DESCRIPTION   : This function reads the value of soil light
 // PARAMETERS   :   
 // RETURNS       : none
 /////////////////////////////////////////////////////////////////
-void analogReadLight(void)
+void ReadLight(void)
 {
-  analogReadLightValue = analogRead(analogReadLightPin);     // read the input pi
+  ReadLightValue = analogRead(ReadLightPin);     // read the input pi
 //  Serial.println("Light Value:");
-//  Serial.println(analogReadLightValue);             // debug value
+//  Serial.println(ReadLightValue);             // debug value
   delay(500);
 }
 
 /////////////////////////////////////////////////////////////////
-// FUNCTION      : analogWriteLight()
+// FUNCTION      : WriteLight()
 // DESCRIPTION   : This function writes the value of light
 // PARAMETERS   :   
 // RETURNS       : none
 /////////////////////////////////////////////////////////////////
-void analogWriteLight(void)
+void WriteLight(void)
 {
-  analogWrite(analogWriteLightPin, analogReadLightValue);
+  analogWrite(WriteLightPin, ReadLightValue);
   delay(500);
 }

@@ -5,19 +5,19 @@ extern "C" {
 #endif
 
 // Soil Moisture Sensor
-extern int analogReadMoistureValue;
-void analogReadMoisture(void);
-void analogWriteMoisture(void);
+extern int ReadMoistureValue;
+void ReadMoisture(void);
+void WriteMoisture(void);
 
 // Temperature Sensor
-extern int analogReadTemperatureValue;
-void analogReadTemperature(void);
-void analogWriteTemperature(void);
+extern int ReadTemperatureValue;
+void ReadTemperature(void);
+void WriteTemperature(void);
 
 // Light Sensor 
-extern int analogReadLightValue;
-void analogReadLight(void);
-void analogWriteLight(void);
+extern int ReadLightValue;
+void ReadLight(void);
+void WriteLight(void);
 
 #ifdef __cplusplus
 } // extern "C"
