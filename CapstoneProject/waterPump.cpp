@@ -12,11 +12,11 @@ void waterPumpSetup(void)
 void waterPumpOn(void)
 {
     digitalWrite(waterPumpPin, HIGH);   // turn the water pump on (HIGH is the voltage level)
-    delay(1000);                       // wait for a second
+    //delay(1000);                       // wait for a second
 }
 
 void waterPumpOff(void)
 {
     digitalWrite(waterPumpPin, LOW);    // turn the water pump off by making the voltage LOW
-    delay(1000);                       // wait for a second
+    //delay(1000);                       // wait for a second
 }

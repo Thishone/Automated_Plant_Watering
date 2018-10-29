@@ -26,7 +26,9 @@ void setup()
 // the loop function runs over and over again forever
 void loop() 
 {
-  if (millis() - lastSerial >= READ_SENSORS_PERIOD)
+  static int bt_status = BT_NONE;
+  if ((millis() - lastSerial >= READ_SENSORS_PERIOD) 
+      && (bt_status == BT_UNAVAILABLE))
   {
     lastSerial = millis();
     //Serial.println(lastSerial);    //prints time since program started
@@ -43,7 +45,8 @@ void loop()
     ReadLight();
     //WriteLight(); 
   }
-  bluetooth();
+  
+  bt_status = bluetooth();
   bluetoothSerial();
 
 }

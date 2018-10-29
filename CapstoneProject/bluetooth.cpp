@@ -32,10 +32,13 @@ void bluetoothSetup(void)
 // FUNCTION      : bluetooth()
 // DESCRIPTION   : This function use default RX(D0) and TX(D1) on the arduino
 // PARAMETERS   :   
-// RETURNS       : none
+// RETURNS       : Bluetooth status
+//                 BT_NONE
+//                 BT_AVAILABLE
 /////////////////////////////////////////////////////////////////
-void bluetooth(void)
+int bluetooth(void)
 {
+  int retValue = BT_NONE;
   if(Serial.available() > 0)      // Send data only when you receive data:
   {
     while(Serial.available()){
@@ -58,7 +61,11 @@ void bluetooth(void)
     }
 
     readData = "";
+    retValue = BT_AVAILABLE;
+  } else {
+    retValue = BT_UNAVAILABLE;
   }
+  return retValue;
 }
 
 /////////////////////////////////////////////////////////////////

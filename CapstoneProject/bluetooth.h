@@ -3,9 +3,16 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-void bluetooth(void);
+int bluetooth(void);
 void bluetoothSerial(void);
 void bluetoothSetup(void);
+
+//Added Bluetooth status check
+enum bt_status {
+   BT_NONE,
+   BT_AVAILABLE,
+   BT_UNAVAILABLE
+};
 #ifdef __cplusplus
 } // extern "C"
 #endif
