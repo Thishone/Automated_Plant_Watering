@@ -16,6 +16,9 @@ unsigned long lastSerial = 0;
 #define SET_PERIOD 2
 #define READ_SENSORS_PERIOD   1000*SET_PERIOD
 
+int snar_status = SONAR_NONE;
+int pump_status = PUMP_NONE;
+
 void setup() 
 {
   Serial.begin(baudRate);              //  setup serial
@@ -29,8 +32,6 @@ void setup()
 void loop() 
 {
   static int bt_status = BT_UNAVAILABLE;
-  static int pump_status = PUMP_OFF;
-  static int snar_status = SONAR_NONE;
   
   if ((millis() - lastSerial >= READ_SENSORS_PERIOD) 
       && (bt_status == BT_UNAVAILABLE)
@@ -51,10 +52,7 @@ void loop()
     //light
     ReadLight();
     //WriteLight(); 
-  }
 
-  if (pump_status == PUMP_ON)
-  {
     snar_status = sonar();
 
     if (snar_status == SONAR_OVER_LIMIT_DISTANCE)
@@ -63,6 +61,7 @@ void loop()
       pump_status = PUMP_OFF;
     }
   }
+
   bt_status = bluetooth();
   bluetoothSerial();
 

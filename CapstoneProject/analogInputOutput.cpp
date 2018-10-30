@@ -2,6 +2,9 @@
 #include "analogInputOutput.h"
 #include "waterPump.h"
 #include "blinkLed.h"
+#include "sonar.h"
+
+extern int snar_status;
 
 #define PERCENT 37  //ASCII code number "%"
 
@@ -13,7 +16,9 @@
 #define MAX_MOISTURE_VALUE 800.0
 
 //Turn on/off Water Pump 
-#define WATER_PUMP_THRESHOLD_VALUE 35.0
+#define WATER_PUMP_THRESHOLD_VALUE 35.0  
+//Min value
+//Max value
 
 int soilMoistureRawVal = 0;
 float soilMoisturePercentage = 0;
@@ -50,8 +55,8 @@ int ReadMoisture(void)
 
   soilMoistureRawVal = MAX_INTEGER_VOLT_VALUE - ReadMoistureValue;
 
-  Serial.println("Moisture Value:");
-  Serial.println(soilMoistureRawVal);
+  //Serial.print("Moisture Value: ");
+  //Serial.println(soilMoistureRawVal);
 
   if (soilMoistureRawVal < MAX_MOISTURE_VALUE)
   {
@@ -63,16 +68,25 @@ int ReadMoisture(void)
   if (soilMoisturePercentage <= WATER_PUMP_THRESHOLD_VALUE){
       //Serial.println(" => Turn on Water Pump");
       ledOn();
-      retValue = waterPumpOn();
-      sprintf (sprintfBuffer, "Turn on Water Pump: %d \n",(int)retValue);
+      if (snar_status == SONAR_OVER_LIMIT_DISTANCE){
+        Serial.println("Turn off Water Pump because the tank water is low");
+        retValue = waterPumpOff();
+      } else {
+        retValue = waterPumpOn();
+        //sprintf (sprintfBuffer, "Turn on Water Pump: %d \n",(int)retValue);
+        Serial.print("Turn on Water Pump: ");
+        Serial.println(retValue);
+      }
 
   } else {
       //Serial.println(" => Turn off the Water Pump");
       ledOff();
       retValue = waterPumpOff();
-      sprintf (sprintfBuffer, "Turn off Water Pump: %d \n",(int)retValue);
+      //sprintf (sprintfBuffer, "Turn off Water Pump: %d \n",(int)retValue);
+      Serial.print("Turn off Water Pump: ");
+      Serial.println(retValue);      
   }
-  Serial.print (sprintfBuffer);
+  //Serial.print (sprintfBuffer);
   Serial.println("\n");
 
   delay(500);

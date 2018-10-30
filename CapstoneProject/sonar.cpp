@@ -10,6 +10,7 @@ long duration;
 int distance;
 
 #define LIMIT_DISTANCE  15
+#define SPEED_SOUND 0.034
 
 void sonarSetup(void)
 {
@@ -20,8 +21,8 @@ void sonarSetup(void)
 int sonar(void)
 {
   int retValue = SONAR_NONE;
-  
-  Serial.println(" running sonar");
+
+  Serial.println("Running sonar");
   // Clears the trigPin
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
@@ -35,7 +36,7 @@ int sonar(void)
   duration = pulseIn(echoPin, HIGH);
   
   // Calculating the distance
-  distance= duration*0.034/2;
+  distance= duration*SPEED_SOUND/2;
 
   if (distance > LIMIT_DISTANCE)
   {
@@ -45,8 +46,9 @@ int sonar(void)
   }
   
   // Prints the distance on the Serial Monitor
-  Serial.print("Distance: ");
+  Serial.print("Sonar Distance: ");
   Serial.println(distance);                   // wait for a second
-
+  Serial.println("\n");
+  
   return retValue;
 }
