@@ -9,14 +9,18 @@ const int echoPin = 10;
 long duration;
 int distance;
 
+#define LIMIT_DISTANCE  15
+
 void sonarSetup(void)
 {
   pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
   pinMode(echoPin, INPUT); // Sets the echoPin as an Input
 }
 
-void sonar(void)
+int sonar(void)
 {
+  int retValue = SONAR_NONE;
+  
   Serial.println(" running sonar");
   // Clears the trigPin
   digitalWrite(trigPin, LOW);
@@ -32,8 +36,17 @@ void sonar(void)
   
   // Calculating the distance
   distance= duration*0.034/2;
+
+  if (distance > LIMIT_DISTANCE)
+  {
+    retValue = SONAR_OVER_LIMIT_DISTANCE;
+  } else {
+    retValue = SONAR_WITHIN_LIMIT_DISTANCE;
+  }
   
   // Prints the distance on the Serial Monitor
   Serial.print("Distance: ");
   Serial.println(distance);                   // wait for a second
+
+  return retValue;
 }

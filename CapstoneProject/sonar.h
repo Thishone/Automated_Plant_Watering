@@ -4,7 +4,14 @@
 extern "C" {
 #endif
 void sonarSetup(void);
-void sonar(void);
+int sonar(void);
+
+//Added sonar status
+enum sonar_status {
+   SONAR_NONE,
+   SONAR_WITHIN_LIMIT_DISTANCE,
+   SONAR_OVER_LIMIT_DISTANCE
+};
 
 #ifdef __cplusplus
 } // extern "C"

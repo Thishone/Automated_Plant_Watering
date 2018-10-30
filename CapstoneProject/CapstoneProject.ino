@@ -28,12 +28,14 @@ void setup()
 // the loop function runs over and over again forever
 void loop() 
 {
-  static int bt_status = BT_NONE;
-  static int pump_status = PUMP_NONE;
+  static int bt_status = BT_UNAVAILABLE;
+  static int pump_status = PUMP_OFF;
+  static int snar_status = SONAR_NONE;
   
   if ((millis() - lastSerial >= READ_SENSORS_PERIOD) 
       && (bt_status == BT_UNAVAILABLE)
-      && (pump_status == PUMP_OFF))
+      //&& (pump_status == PUMP_OFF)
+      )
   {
     lastSerial = millis();
     //Serial.println(lastSerial);    //prints time since program started
@@ -53,7 +55,13 @@ void loop()
 
   if (pump_status == PUMP_ON)
   {
-    sonar();
+    snar_status = sonar();
+
+    if (snar_status == SONAR_OVER_LIMIT_DISTANCE)
+    {
+      waterPumpOff();
+      pump_status = PUMP_OFF;
+    }
   }
   bt_status = bluetooth();
   bluetoothSerial();
