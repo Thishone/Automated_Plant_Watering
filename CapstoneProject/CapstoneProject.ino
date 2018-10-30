@@ -7,6 +7,7 @@ Castone Project
 #include "analogInputOutput.h"
 #include "waterPump.h"
 #include "bluetooth.h"
+#include "sonar.h"
 #include <SoftwareSerial.h>
 
 int baudRate = 9600;
@@ -21,20 +22,24 @@ void setup()
   blinkLedSetup();
   waterPumpSetup();
   bluetoothSetup();
+  sonarSetup();
 }
 
 // the loop function runs over and over again forever
 void loop() 
 {
   static int bt_status = BT_NONE;
+  static int pump_status = PUMP_NONE;
+  
   if ((millis() - lastSerial >= READ_SENSORS_PERIOD) 
-      && (bt_status == BT_UNAVAILABLE))
+      && (bt_status == BT_UNAVAILABLE)
+      && (pump_status == PUMP_OFF))
   {
     lastSerial = millis();
     //Serial.println(lastSerial);    //prints time since program started
 
     //soil Moisture
-    ReadMoisture();
+    pump_status = ReadMoisture();
     //WriteMoisture();
   
     //temperature
@@ -45,7 +50,11 @@ void loop()
     ReadLight();
     //WriteLight(); 
   }
-  
+
+  if (pump_status == PUMP_ON)
+  {
+    sonar();
+  }
   bt_status = bluetooth();
   bluetoothSerial();
 

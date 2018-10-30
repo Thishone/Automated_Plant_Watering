@@ -43,8 +43,9 @@ char sprintfBuffer[60]; // store messages
 // PARAMETERS   :   
 // RETURNS       : none
 /////////////////////////////////////////////////////////////////
-void ReadMoisture(void)
+int ReadMoisture(void)
 {
+  int retValue = 0;
   ReadMoistureValue = analogRead(ReadMoisturePin);     // read the input pin
 
   soilMoistureRawVal = MAX_INTEGER_VOLT_VALUE - ReadMoistureValue;
@@ -60,17 +61,22 @@ void ReadMoisture(void)
   }
 
   if (soilMoisturePercentage <= WATER_PUMP_THRESHOLD_VALUE){
-      Serial.println(" => Turn on Water Pump");
+      //Serial.println(" => Turn on Water Pump");
       ledOn();
-      waterPumpOn();
+      retValue = waterPumpOn();
+      sprintf (sprintfBuffer, "Turn on Water Pump: %d \n",(int)retValue);
+
   } else {
-      Serial.println(" => Turn off the Water Pump");
+      //Serial.println(" => Turn off the Water Pump");
       ledOff();
-      waterPumpOff();
+      retValue = waterPumpOff();
+      sprintf (sprintfBuffer, "Turn off Water Pump: %d \n",(int)retValue);
   }
+  Serial.print (sprintfBuffer);
   Serial.println("\n");
 
   delay(500);
+  return retValue;
 }
 
 /////////////////////////////////////////////////////////////////

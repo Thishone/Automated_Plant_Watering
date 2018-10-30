@@ -4,9 +4,15 @@
 extern "C" {
 #endif
 void waterPumpSetup(void);
-void waterPumpOn(void);
-void waterPumpOff(void);
+int waterPumpOn(void);
+int waterPumpOff(void);
 
+//Added Water Pump status
+enum waterPump_status {
+   PUMP_NONE,
+   PUMP_ON,
+   PUMP_OFF
+};
 #ifdef __cplusplus
 } // extern "C"
 #endif

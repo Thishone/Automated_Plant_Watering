@@ -9,14 +9,20 @@ void waterPumpSetup(void)
   pinMode(waterPumpPin, OUTPUT);
 }
 
-void waterPumpOn(void)
+int waterPumpOn(void)
 {
-    digitalWrite(waterPumpPin, HIGH);   // turn the water pump on (HIGH is the voltage level)
-    //delay(1000);                       // wait for a second
+  int retValue = PUMP_NONE;
+  digitalWrite(waterPumpPin, HIGH);   // turn the water pump on (HIGH is the voltage level)
+  //delay(1000);                       // wait for a second
+  retValue = PUMP_ON;
+  return retValue;
 }
 
-void waterPumpOff(void)
+int waterPumpOff(void)
 {
-    digitalWrite(waterPumpPin, LOW);    // turn the water pump off by making the voltage LOW
-    //delay(1000);                       // wait for a second
+  int retValue = PUMP_NONE;
+  digitalWrite(waterPumpPin, LOW);    // turn the water pump off by making the voltage LOW
+  //delay(1000);                       // wait for a second
+  retValue = PUMP_OFF;
+  return retValue;
 }

@@ -6,7 +6,7 @@ extern "C" {
 
 // Soil Moisture Sensor
 extern int ReadMoistureValue;
-void ReadMoisture(void);
+int ReadMoisture(void);
 void WriteMoisture(void);
 
 // Temperature Sensor
