@@ -16,9 +16,12 @@ extern int snar_status;
 #define MAX_MOISTURE_VALUE 800.0
 
 //Turn on/off Water Pump 
-#define WATER_PUMP_THRESHOLD_VALUE 35.0  
-//Min value
-//Max value
+#define WATER_PUMP_THRESHOLD_VALUE 35.0
+
+//read the setted value from bluetooth by user
+unsigned int  max_moisture = 35;
+unsigned int  min_moisture = 35;
+unsigned int  diff_moisture = 0;
 
 int soilMoistureRawVal = 0;
 float soilMoisturePercentage = 0;
@@ -55,9 +58,6 @@ int ReadMoisture(void)
 
   soilMoistureRawVal = MAX_INTEGER_VOLT_VALUE - ReadMoistureValue;
 
-  //Serial.print("Moisture Value: ");
-  //Serial.println(soilMoistureRawVal);
-
   if (soilMoistureRawVal < MAX_MOISTURE_VALUE)
   {
     soilMoisturePercentage = ((float)soilMoistureRawVal / MAX_MOISTURE_VALUE)*100.0;
@@ -65,34 +65,66 @@ int ReadMoisture(void)
     Serial.print (sprintfBuffer);
   }
 
-  if (soilMoisturePercentage <= WATER_PUMP_THRESHOLD_VALUE){
-      //Serial.println(" => Turn on Water Pump");
-      ledOn();
-      if (snar_status == SONAR_OVER_LIMIT_DISTANCE){
-        Serial.println("Turn off Water Pump because the tank water is low");
-        retValue = waterPumpOff();
-      } else {
-        retValue = waterPumpOn();
-        //sprintf (sprintfBuffer, "Turn on Water Pump: %d \n",(int)retValue);
-        Serial.print("Turn on Water Pump: ");
-        Serial.println(retValue);
-      }
+//  if (soilMoisturePercentage <= WATER_PUMP_THRESHOLD_VALUE){
+//      ledOn();
+//      if (snar_status == SONAR_OVER_LIMIT_DISTANCE){
+//        Serial.println("Turn off Water Pump because the tank water is low");
+//        retValue = waterPumpOff();
+//      } else {
+//        retValue = waterPumpOn();
+//        Serial.print("Turn on Water Pump: ");
+//        Serial.println(retValue);
+//      }
+//
+//  } else {
+//      ledOff();
+//      retValue = waterPumpOff();
+//      Serial.print("Turn off Water Pump: ");
+//      Serial.println(retValue);      
+//  }
 
-  } else {
-      //Serial.println(" => Turn off the Water Pump");
-      ledOff();
-      retValue = waterPumpOff();
-      //sprintf (sprintfBuffer, "Turn off Water Pump: %d \n",(int)retValue);
-      Serial.print("Turn off Water Pump: ");
-      Serial.println(retValue);      
-  }
-  //Serial.print (sprintfBuffer);
   Serial.println("\n");
 
-  delay(500);
+//  delay(500);
   return retValue;
 }
 
+/////////////////////////////////////////////////////////////////
+// FUNCTION      : supplyWater()
+// DESCRIPTION   : This function supplys Water
+// PARAMETERS   :   
+// RETURNS       : none
+/////////////////////////////////////////////////////////////////
+void supplyWater(void)
+{
+  
+  if (soilMoisturePercentage <= min_moisture)
+  {
+    diff_moisture = max_moisture - min_moisture;
+    Serial.print("Diff moisture value: ");
+    Serial.println(diff_moisture);      
+    if (diff_moisture < 10){
+      waterPumpOn();
+      delay(1000);
+    } else if (diff_moisture >= 10 && diff_moisture < 20){
+      waterPumpOn();
+      delay(2000);
+    } else if (diff_moisture >= 20 && diff_moisture < 30){
+      waterPumpOn();
+      delay(3000);
+    } else if (diff_moisture >= 30 && diff_moisture < 50){
+      waterPumpOn();
+      delay(4000);
+    } else if (diff_moisture >= 50){
+      waterPumpOn();
+      delay(5000);
+    }
+  }
+  else if (soilMoisturePercentage >= max_moisture)
+  {
+    waterPumpOff();
+  }
+}
 /////////////////////////////////////////////////////////////////
 // FUNCTION      : WriteMoisture()
 // DESCRIPTION   : This function writes the value of soil Moisture
@@ -114,8 +146,8 @@ void WriteMoisture(void)
 void ReadTemperature(void)
 {
   ReadTemperatureValue = analogRead(ReadTemperaturePin);     // read the input pi
-//  Serial.println("Temperature Value:");
-//  Serial.println(ReadTemperatureValue);             // debug value
+  Serial.print("Temperature Value:");
+  Serial.println(ReadTemperatureValue);             // debug value
   delay(500);
 }
 
@@ -140,8 +172,8 @@ void WriteTemperature(void)
 void ReadLight(void)
 {
   ReadLightValue = analogRead(ReadLightPin);     // read the input pi
-//  Serial.println("Light Value:");
-//  Serial.println(ReadLightValue);             // debug value
+  Serial.print("Light Value:");
+  Serial.println(ReadLightValue);             // debug value
   delay(500);
 }
 

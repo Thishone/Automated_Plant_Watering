@@ -44,7 +44,18 @@ void loop()
     //soil Moisture
     pump_status = ReadMoisture();
     //WriteMoisture();
-  
+
+    if (bt_status & BT_AVAILABLE)
+    {
+      if (bt_status & BT_READ_ON){
+        waterPumpOn();
+      } else if (bt_status & BT_READ_OFF){
+        waterPumpOff();
+      }
+    } else {
+      supplyWater();
+    }
+    
     //temperature
     ReadTemperature();
     //WriteTemperature();
@@ -53,13 +64,13 @@ void loop()
     ReadLight();
     //WriteLight(); 
 
-    snar_status = sonar();
-
-    if (snar_status == SONAR_OVER_LIMIT_DISTANCE)
-    {
-      waterPumpOff();
-      pump_status = PUMP_OFF;
-    }
+//    snar_status = sonar();
+//
+//    if (snar_status == SONAR_OVER_LIMIT_DISTANCE)
+//    {
+//      waterPumpOff();
+//      pump_status = PUMP_OFF;
+//    }
   }
 
   bt_status = bluetooth();

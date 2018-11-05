@@ -4,11 +4,15 @@
 #include "blinkLed.h"
 #include "bluetooth.h"
 #include "waterPump.h"
+#include "analogInputOutput.h"
 
 #define BTserialRX 5
 #define BTserialTX 6
 #define RX 0
 #define TX 1
+
+#define MAX_MOISTURE "max"
+#define MIN_MOISTURE "min"
 
 SoftwareSerial BTserial(BTserialRX,BTserialTX);
          
@@ -51,19 +55,21 @@ int bluetooth(void)
        
     if(readData == "on")              // Checks whether value of data is equal to 1
     {
-      ledOn();   //If value is 1 then LED turns ON
-      waterPumpOn();
+//      ledOn();   //If value is 1 then LED turns ON
+//      waterPumpOn();
+      retValue |= BT_READ_ON;
     }
     else if(readData == "off")         //  Checks whether value of data is equal to 0
     {
-      ledOff();    //If value is 0 then LED turns OFF
-      waterPumpOff();
+//      ledOff();    //If value is 0 then LED turns OFF
+//      waterPumpOff();
+      retValue |= BT_READ_OFF;
     }
 
     readData = "";
-    retValue = BT_AVAILABLE;
+    retValue |= BT_AVAILABLE;
   } else {
-    retValue = BT_UNAVAILABLE;
+    retValue |= BT_UNAVAILABLE;
   }
   return retValue;
 }
@@ -84,6 +90,9 @@ void bluetoothSerial(void)
     BTserial_readData = (char)BTserial.read();
     Serial.print(BTserial_readData);
 
+    max_moisture = 60;
+    min_moisture = 30;
+   
     BTserial_readData = "";
   }
 }

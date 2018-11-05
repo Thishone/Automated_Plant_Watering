@@ -8,7 +8,9 @@ extern "C" {
 extern int ReadMoistureValue;
 int ReadMoisture(void);
 void WriteMoisture(void);
-
+void supplyWater(void);
+extern unsigned int  max_moisture;
+extern unsigned int  min_moisture;
 // Temperature Sensor
 extern int ReadTemperatureValue;
 void ReadTemperature(void);
