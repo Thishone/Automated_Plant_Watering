@@ -34,19 +34,21 @@ void loop()
   static int bt_status = BT_UNAVAILABLE;
   
   if ((millis() - lastSerial >= READ_SENSORS_PERIOD) 
-      && (bt_status == BT_UNAVAILABLE)
-      //&& (pump_status == PUMP_OFF)
       )
   {
     lastSerial = millis();
     //Serial.println(lastSerial);    //prints time since program started
-
+    
+    Serial.println("\n");
+    
     //soil Moisture
     pump_status = ReadMoisture();
     //WriteMoisture();
 
     if (bt_status & BT_AVAILABLE)
     {
+      Serial.print("bt_status: ");
+      Serial.println(bt_status);
       if (bt_status & BT_READ_ON){
         waterPumpOn();
       } else if (bt_status & BT_READ_OFF){
@@ -57,14 +59,12 @@ void loop()
     }
     
     //temperature
-    ReadTemperature();
-    //WriteTemperature();
+    //ReadTemperature();
   
     //light
-    ReadLight();
-    //WriteLight(); 
+    //ReadLight();
 
-//    snar_status = sonar();
+    snar_status = sonar();
 //
 //    if (snar_status == SONAR_OVER_LIMIT_DISTANCE)
 //    {
@@ -75,5 +75,4 @@ void loop()
 
   bt_status = bluetooth();
   bluetoothSerial();
-
 }

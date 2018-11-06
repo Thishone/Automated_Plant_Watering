@@ -1,28 +1,54 @@
 #include <Arduino.h>
 #include "waterPump.h"
+#include "blinkLed.h"
+#include "analogInputOutput.h"
 
 const int waterPumpPin =  11;// the number of the water pump pin
 
+/////////////////////////////////////////////////////////////////
+// FUNCTION      : waterPumpSetup()
+// DESCRIPTION   : This function sets the warter pump pin
+// PARAMETERS   :   
+// RETURNS       : none
+/////////////////////////////////////////////////////////////////
 void waterPumpSetup(void)
 {
   // initialize digital pin waterPump as an output.
   pinMode(waterPumpPin, OUTPUT);
 }
 
+/////////////////////////////////////////////////////////////////
+// FUNCTION      : waterPumpOn()
+// DESCRIPTION   : This function turn on the water pump
+// PARAMETERS   :   
+// RETURNS       : none
+/////////////////////////////////////////////////////////////////
 int waterPumpOn(void)
 {
   int retValue = PUMP_NONE;
-  digitalWrite(waterPumpPin, HIGH);   // turn the water pump on (HIGH is the voltage level)
-  //delay(1000);                       // wait for a second
-  retValue = PUMP_ON;
+  if (alertWaterIsLow() == 0){
+    Serial.println("water pump on");
+    digitalWrite(waterPumpPin, HIGH);   // turn the water pump on (HIGH is the voltage level)
+    ledOn();
+    retValue = PUMP_ON;
+  } else {
+    retValue = PUMP_OFF;
+  }
   return retValue;
 }
 
+/////////////////////////////////////////////////////////////////
+// FUNCTION      : waterPumpOff()
+// DESCRIPTION   : This function turn off the water pump
+// PARAMETERS   :   
+// RETURNS       : none
+/////////////////////////////////////////////////////////////////
 int waterPumpOff(void)
 {
   int retValue = PUMP_NONE;
+  Serial.println("water pump off");
   digitalWrite(waterPumpPin, LOW);    // turn the water pump off by making the voltage LOW
-  //delay(1000);                       // wait for a second
+  ledOff();
   retValue = PUMP_OFF;
   return retValue;
 }

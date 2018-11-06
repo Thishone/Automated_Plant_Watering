@@ -83,12 +83,26 @@ int ReadMoisture(void)
 //      Serial.println(retValue);      
 //  }
 
-  Serial.println("\n");
+//  Serial.println("\n");
 
 //  delay(500);
   return retValue;
 }
-
+/////////////////////////////////////////////////////////////////
+// FUNCTION      : alertWaterIsLow()
+// DESCRIPTION   : This function alert the tank water is low
+// PARAMETERS   :   
+// RETURNS       : none
+/////////////////////////////////////////////////////////////////
+int alertWaterIsLow(void)
+{
+  int retValue = 0;
+  if (snar_status == SONAR_OVER_LIMIT_DISTANCE){
+    Serial.println("Turn off Water Pump because the tank water is low!!!");
+    retValue = 1;
+  }
+  return retValue;
+}
 /////////////////////////////////////////////////////////////////
 // FUNCTION      : supplyWater()
 // DESCRIPTION   : This function supplys Water
@@ -101,24 +115,30 @@ void supplyWater(void)
   if (soilMoisturePercentage <= min_moisture)
   {
     diff_moisture = max_moisture - min_moisture;
-    Serial.print("Diff moisture value: ");
+    Serial.print("Diff moisture value (Max - Min): ");
     Serial.println(diff_moisture);      
     if (diff_moisture < 10){
       waterPumpOn();
-      delay(1000);
+      Serial.println("wait for 3 second");
+      delay(3000);  // wait for a second
     } else if (diff_moisture >= 10 && diff_moisture < 20){
       waterPumpOn();
-      delay(2000);
+      Serial.println("wait for 5 second");
+      delay(5000);
     } else if (diff_moisture >= 20 && diff_moisture < 30){
       waterPumpOn();
-      delay(3000);
+      Serial.println("wait for 10 second");
+      delay(10000);
     } else if (diff_moisture >= 30 && diff_moisture < 50){
       waterPumpOn();
-      delay(4000);
+      Serial.println("wait for 15 second");
+      delay(15000);
     } else if (diff_moisture >= 50){
       waterPumpOn();
-      delay(5000);
+      Serial.println("wait for 20 second");
+      delay(20000);
     }
+    waterPumpOff();
   }
   else if (soilMoisturePercentage >= max_moisture)
   {
@@ -134,7 +154,7 @@ void supplyWater(void)
 void WriteMoisture(void)
 {
   analogWrite(WriteMoisturePin, ReadMoistureValue);
-  delay(500);
+//  delay(500);
 }
 
 /////////////////////////////////////////////////////////////////
@@ -148,7 +168,7 @@ void ReadTemperature(void)
   ReadTemperatureValue = analogRead(ReadTemperaturePin);     // read the input pi
   Serial.print("Temperature Value:");
   Serial.println(ReadTemperatureValue);             // debug value
-  delay(500);
+//  delay(500);
 }
 
 /////////////////////////////////////////////////////////////////
@@ -160,7 +180,7 @@ void ReadTemperature(void)
 void WriteTemperature(void)
 {
   analogWrite(WriteTemperaturePin, ReadTemperatureValue);
-  delay(500);
+//  delay(500);
 }
 
 /////////////////////////////////////////////////////////////////
@@ -174,7 +194,7 @@ void ReadLight(void)
   ReadLightValue = analogRead(ReadLightPin);     // read the input pi
   Serial.print("Light Value:");
   Serial.println(ReadLightValue);             // debug value
-  delay(500);
+//  delay(500);
 }
 
 /////////////////////////////////////////////////////////////////
@@ -186,5 +206,5 @@ void ReadLight(void)
 void WriteLight(void)
 {
   analogWrite(WriteLightPin, ReadLightValue);
-  delay(500);
+//  delay(500);
 }

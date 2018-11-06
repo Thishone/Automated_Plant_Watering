@@ -49,20 +49,16 @@ int bluetooth(void)
       readData += (char)Serial.read();        //Read the incoming data & store into data
       delay(500);
     }
-    Serial.println("Bluetooth incoming data:");
+    Serial.print("Bluetooth incoming data:");
     Serial.println(readData);          //Print Value inside data in Serial monitor
     Serial.print("\n");
        
     if(readData == "on")              // Checks whether value of data is equal to 1
     {
-//      ledOn();   //If value is 1 then LED turns ON
-//      waterPumpOn();
       retValue |= BT_READ_ON;
     }
     else if(readData == "off")         //  Checks whether value of data is equal to 0
     {
-//      ledOff();    //If value is 0 then LED turns OFF
-//      waterPumpOff();
       retValue |= BT_READ_OFF;
     }
 
@@ -71,6 +67,7 @@ int bluetooth(void)
   } else {
     retValue |= BT_UNAVAILABLE;
   }
+
   return retValue;
 }
 
@@ -86,7 +83,7 @@ void bluetoothSerial(void)
   BTserial.print("AT");
   if(BTserial.available() > 0)
   {
-    Serial.println("bluetoothSerial incoming data:");
+    Serial.print("bluetoothSerial incoming data:");
     BTserial_readData = (char)BTserial.read();
     Serial.print(BTserial_readData);
 

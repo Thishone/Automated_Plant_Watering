@@ -48,7 +48,7 @@ int sonar(void)
   // Prints the distance on the Serial Monitor
   Serial.print("Sonar Distance: ");
   Serial.println(distance);                   // wait for a second
-  Serial.println("\n");
+//  Serial.println("\n");
   
   return retValue;
 }

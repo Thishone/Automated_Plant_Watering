@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "blinkLed.h"
 
-const int ledPin =  12;// the number of the LED pin
+const int ledPin =  13;// the number of the LED pin
 
 /////////////////////////////////////////////////////////////////
 // FUNCTION      : blinkLedSetup()

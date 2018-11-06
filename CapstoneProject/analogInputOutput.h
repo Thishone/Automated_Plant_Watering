@@ -9,6 +9,7 @@ extern int ReadMoistureValue;
 int ReadMoisture(void);
 void WriteMoisture(void);
 void supplyWater(void);
+int alertWaterIsLow(void);
 extern unsigned int  max_moisture;
 extern unsigned int  min_moisture;
 // Temperature Sensor
