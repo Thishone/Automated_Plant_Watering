@@ -2,6 +2,7 @@
 #include "waterPump.h"
 #include "blinkLed.h"
 #include "analogInputOutput.h"
+#include "debugLog.h"
 
 const int waterPumpPin =  11;// the number of the water pump pin
 
@@ -27,7 +28,7 @@ int waterPumpOn(void)
 {
   int retValue = PUMP_NONE;
   if (alertWaterIsLow() == 0){
-    Serial.println("water pump on");
+    debugLog("water pump on", NONE_DATA, NULL, DEBUG_DEV);
     digitalWrite(waterPumpPin, HIGH);   // turn the water pump on (HIGH is the voltage level)
     ledOn();
     retValue = PUMP_ON;
@@ -46,7 +47,7 @@ int waterPumpOn(void)
 int waterPumpOff(void)
 {
   int retValue = PUMP_NONE;
-  Serial.println("water pump off");
+  debugLog("water pump off", NONE_DATA, NULL, DEBUG_DEV);
   digitalWrite(waterPumpPin, LOW);    // turn the water pump off by making the voltage LOW
   ledOff();
   retValue = PUMP_OFF;

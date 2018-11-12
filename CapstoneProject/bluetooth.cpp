@@ -5,6 +5,7 @@
 #include "bluetooth.h"
 #include "waterPump.h"
 #include "analogInputOutput.h"
+#include "debugLog.h"
 
 #define BTserialRX 5
 #define BTserialTX 6
@@ -15,9 +16,10 @@
 #define MIN_MOISTURE "min"
 
 SoftwareSerial BTserial(BTserialRX,BTserialTX);
-         
-String readData = ""; //Variable for storing received data
-String BTserial_readData = ""; //Variable for storing received data
+
+#define READ_DATA_SIZE 10
+char readData[READ_DATA_SIZE] = {0,}; //Variable for storing received data
+char BTserial_readData[READ_DATA_SIZE] = {0,}; //Variable for storing received data
 
 
 /////////////////////////////////////////////////////////////////
@@ -43,26 +45,50 @@ void bluetoothSetup(void)
 int bluetooth(void)
 {
   int retValue = BT_NONE;
+  const char* delim = " ";
+  char * token;
+  char * tempStr;
+  byte size = 0;
+  
   if(Serial.available() > 0)      // Send data only when you receive data:
   {
     while(Serial.available()){
-      readData += (char)Serial.read();        //Read the incoming data & store into data
+      size = Serial.readBytes(readData, READ_DATA_SIZE); //Read the incoming data & store into data
+      readData[size] =' ';
       delay(500);
     }
-    Serial.print("Bluetooth incoming data:");
-    Serial.println(readData);          //Print Value inside data in Serial monitor
-    Serial.print("\n");
-       
-    if(readData == "on")              // Checks whether value of data is equal to 1
+    debugLog("Bluetooth incoming data: ", NONE_DATA, readData, DEBUG_DEV);
+    
+    token = strtok(readData, delim);
+
+    debugLog("token: ", NONE_DATA, token, DEBUG_DEV);
+    
+    if (strcmp(MAX_MOISTURE, token) == 0)
     {
-      retValue |= BT_READ_ON;
+      tempStr = strtok(NULL, delim);
+      debugLog("MAX tempStr: ", NONE_DATA, tempStr, DEBUG_DEV);
+      max_moisture = atoi(tempStr);
+    } 
+    else if (strcmp(MIN_MOISTURE, token) == 0)
+    {
+      tempStr = strtok(NULL, delim);
+      debugLog("MIN tempStr: ", NONE_DATA, tempStr, DEBUG_DEV);
+      min_moisture = atoi(tempStr);
     }
-    else if(readData == "off")         //  Checks whether value of data is equal to 0
+             
+    if (strcmp(readData, "on") == 0)   // Checks whether value of data is equal to 1
     {
-      retValue |= BT_READ_OFF;
+      retValue |= BT_READ_ON;  
+      debugLog("BT_READ_ON: ", retValue, NULL, DEBUG_DEV); 
+    }     
+    else if (strcmp(readData, "off") == 0)   //  Checks whether value of data is equal to 0
+    {
+      retValue |= BT_READ_OFF;   
+      debugLog("BT_READ_OFF: ", retValue, NULL,DEBUG_DEV);  
     }
 
-    readData = "";
+    memset(readData, '0', sizeof(readData));
+
     retValue |= BT_AVAILABLE;
   } else {
     retValue |= BT_UNAVAILABLE;
@@ -78,18 +104,16 @@ int bluetooth(void)
 // RETURNS       : none
 /////////////////////////////////////////////////////////////////
 void bluetoothSerial(void)
-{
+{  
   BTserial.begin(9600);
   BTserial.print("AT");
   if(BTserial.available() > 0)
   {
-    Serial.print("bluetoothSerial incoming data:");
-    BTserial_readData = (char)BTserial.read();
-    Serial.print(BTserial_readData);
+    //BTserial_readData = (char)BTserial.read();
+    Serial.readBytes(BTserial_readData, READ_DATA_SIZE);
 
-    max_moisture = 60;
-    min_moisture = 30;
+    debugLog("bluetoothSerial incoming data: ", NONE_DATA, BTserial_readData, DEBUG_DEV);  
    
-    BTserial_readData = "";
+    memset(BTserial_readData, '0', sizeof(readData));
   }
 }

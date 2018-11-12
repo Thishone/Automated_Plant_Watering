@@ -9,6 +9,7 @@ Castone Project
 #include "bluetooth.h"
 #include "sonar.h"
 #include <SoftwareSerial.h>
+#include "debugLog.h"
 
 int baudRate = 9600;
 unsigned long lastSerial = 0;
@@ -47,8 +48,7 @@ void loop()
 
     if (bt_status & BT_AVAILABLE)
     {
-      Serial.print("bt_status: ");
-      Serial.println(bt_status);
+      debugLog("bt_status: ", bt_status, NULL, DEBUG_DEV);
       if (bt_status & BT_READ_ON){
         waterPumpOn();
       } else if (bt_status & BT_READ_OFF){

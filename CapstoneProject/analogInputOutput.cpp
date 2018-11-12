@@ -3,6 +3,7 @@
 #include "waterPump.h"
 #include "blinkLed.h"
 #include "sonar.h"
+#include "debugLog.h"
 
 extern int snar_status;
 
@@ -61,8 +62,10 @@ int ReadMoisture(void)
   if (soilMoistureRawVal < MAX_MOISTURE_VALUE)
   {
     soilMoisturePercentage = ((float)soilMoistureRawVal / MAX_MOISTURE_VALUE)*100.0;
-    sprintf (sprintfBuffer, "Soil Moisture Percentage: %d%c \n",(int)soilMoisturePercentage,PERCENT);
-    Serial.print (sprintfBuffer);
+    #ifdef DEBUG_LOG
+      sprintf (sprintfBuffer, "Soil Moisture Percentage: %d%c \n",(int)soilMoisturePercentage,PERCENT);
+      Serial.print (sprintfBuffer);
+    #endif
   }
 
 //  if (soilMoisturePercentage <= WATER_PUMP_THRESHOLD_VALUE){
@@ -98,7 +101,7 @@ int alertWaterIsLow(void)
 {
   int retValue = 0;
   if (snar_status == SONAR_OVER_LIMIT_DISTANCE){
-    Serial.println("Turn off Water Pump because the tank water is low!!!");
+    debugLog("Turn off Water Pump because the tank water is low!!!", NONE_DATA, NULL, DEBUG_DEV);
     retValue = 1;
   }
   return retValue;
@@ -115,30 +118,32 @@ void supplyWater(void)
   if (soilMoisturePercentage <= min_moisture)
   {
     diff_moisture = max_moisture - min_moisture;
-    Serial.print("Diff moisture value (Max - Min): ");
-    Serial.println(diff_moisture);      
+    debugLog("Diff moisture value (Max - Min): ", diff_moisture, NULL, DEBUG_DEV);
+
     if (diff_moisture < 10){
       waterPumpOn();
-      Serial.println("wait for 3 second");
+      debugLog("wait for 3 second", NONE_DATA, NULL, DEBUG_DEV);
       delay(3000);  // wait for a second
     } else if (diff_moisture >= 10 && diff_moisture < 20){
       waterPumpOn();
-      Serial.println("wait for 5 second");
+      debugLog("wait for 5 second", NONE_DATA, NULL, DEBUG_DEV);
       delay(5000);
     } else if (diff_moisture >= 20 && diff_moisture < 30){
       waterPumpOn();
-      Serial.println("wait for 10 second");
+      debugLog("wait for 10 second", NONE_DATA, NULL, DEBUG_DEV);
       delay(10000);
     } else if (diff_moisture >= 30 && diff_moisture < 50){
       waterPumpOn();
-      Serial.println("wait for 15 second");
+      debugLog("wait for 15 second", NONE_DATA, NULL, DEBUG_DEV);
       delay(15000);
     } else if (diff_moisture >= 50){
       waterPumpOn();
-      Serial.println("wait for 20 second");
+      debugLog("wait for 20 second", NONE_DATA, NULL, DEBUG_DEV);
       delay(20000);
     }
     waterPumpOff();
+    debugLog("wait for 10 second", NONE_DATA, NULL, DEBUG_DEV);
+    delay(10000);
   }
   else if (soilMoisturePercentage >= max_moisture)
   {
@@ -166,8 +171,7 @@ void WriteMoisture(void)
 void ReadTemperature(void)
 {
   ReadTemperatureValue = analogRead(ReadTemperaturePin);     // read the input pi
-  Serial.print("Temperature Value:");
-  Serial.println(ReadTemperatureValue);             // debug value
+  debugLog("Temperature Value: ", ReadTemperatureValue, NULL, DEBUG_DEV);
 //  delay(500);
 }
 
@@ -192,8 +196,7 @@ void WriteTemperature(void)
 void ReadLight(void)
 {
   ReadLightValue = analogRead(ReadLightPin);     // read the input pi
-  Serial.print("Light Value:");
-  Serial.println(ReadLightValue);             // debug value
+  debugLog("Light Value: ", ReadLightValue, NULL, DEBUG_DEV);
 //  delay(500);
 }
 

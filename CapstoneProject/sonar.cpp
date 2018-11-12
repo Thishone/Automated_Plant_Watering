@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "sonar.h"
+#include "debugLog.h"
 
 // defines pins numbers
 const int trigPin = 9;
@@ -22,7 +23,7 @@ int sonar(void)
 {
   int retValue = SONAR_NONE;
 
-  Serial.println("Running sonar");
+  debugLog("Running sonar", NONE_DATA, NULL, DEBUG_DEV);
   // Clears the trigPin
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
@@ -46,9 +47,7 @@ int sonar(void)
   }
   
   // Prints the distance on the Serial Monitor
-  Serial.print("Sonar Distance: ");
-  Serial.println(distance);                   // wait for a second
-//  Serial.println("\n");
+  debugLog("Sonar Distance: ", distance, NULL, DEBUG_DEV);
   
   return retValue;
 }
