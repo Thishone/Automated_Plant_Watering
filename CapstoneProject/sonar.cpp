@@ -8,7 +8,8 @@ const int echoPin = 10;
 
 // defines variables
 long duration;
-int distance;
+int sonarDistance = 0;
+int pre_sonarDistance = 0;
 
 #define LIMIT_DISTANCE  15
 #define SPEED_SOUND 0.034
@@ -23,7 +24,7 @@ int sonar(void)
 {
   int retValue = SONAR_NONE;
 
-  debugLog("Running sonar", NONE_DATA, NULL, DEBUG_DEV);
+  //debugLog("Running sonar", NONE_DATA, NULL, DEBUG_DEV);
   // Clears the trigPin
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
@@ -36,18 +37,21 @@ int sonar(void)
   // Reads the echoPin, returns the sound wave travel time in microseconds
   duration = pulseIn(echoPin, HIGH);
   
-  // Calculating the distance
-  distance= duration*SPEED_SOUND/2;
+  // Calculating the sonarDistance
+  sonarDistance= duration*SPEED_SOUND/2;
 
-  if (distance > LIMIT_DISTANCE)
+  if (sonarDistance > LIMIT_DISTANCE)
   {
     retValue = SONAR_OVER_LIMIT_DISTANCE;
   } else {
     retValue = SONAR_WITHIN_LIMIT_DISTANCE;
   }
   
-  // Prints the distance on the Serial Monitor
-  debugLog("Sonar Distance: ", distance, NULL, DEBUG_DEV);
+  // Prints the sonarDistance on the Serial Monitor
+  if (pre_sonarDistance != sonarDistance){
+    debugLog("Sonar sonarDistance: ", sonarDistance, NULL, DEBUG_DEV);
+  }
+  
   
   return retValue;
 }

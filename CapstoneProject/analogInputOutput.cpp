@@ -23,9 +23,11 @@ extern int snar_status;
 unsigned int  max_moisture = 35;
 unsigned int  min_moisture = 35;
 unsigned int  diff_moisture = 0;
+unsigned int  pre_diff_moisture = 0;
 
 int soilMoistureRawVal = 0;
 float soilMoisturePercentage = 0;
+float pre_soilMoisturePercentage = 0;
 
 int ReadMoisturePin = 0;     // connected to analog pin 0
                                    // outside leads to ground and +5V
@@ -44,7 +46,6 @@ int ReadLightPin = 2;     // connected to analog pin 1
 int WriteLightPin = 10; 
 int ReadLightValue = 0;   // variable to store the value read
 
-char sprintfBuffer[60]; // store messages
 
 /////////////////////////////////////////////////////////////////
 // FUNCTION      : ReadMoisture()
@@ -55,6 +56,7 @@ char sprintfBuffer[60]; // store messages
 int ReadMoisture(void)
 {
   int retValue = 0;
+  
   ReadMoistureValue = analogRead(ReadMoisturePin);     // read the input pin
 
   soilMoistureRawVal = MAX_INTEGER_VOLT_VALUE - ReadMoistureValue;
@@ -62,33 +64,14 @@ int ReadMoisture(void)
   if (soilMoistureRawVal < MAX_MOISTURE_VALUE)
   {
     soilMoisturePercentage = ((float)soilMoistureRawVal / MAX_MOISTURE_VALUE)*100.0;
-    #ifdef DEBUG_LOG
-      sprintf (sprintfBuffer, "Soil Moisture Percentage: %d%c \n",(int)soilMoisturePercentage,PERCENT);
-      Serial.print (sprintfBuffer);
-    #endif
+    
+    if ((int)pre_soilMoisturePercentage != (int)soilMoisturePercentage){
+      debugLog("Soil Moisture Percentage: ", soilMoisturePercentage, NULL, DEBUG_DEV);
+      pre_soilMoisturePercentage = soilMoisturePercentage;
+    }
+    
   }
 
-//  if (soilMoisturePercentage <= WATER_PUMP_THRESHOLD_VALUE){
-//      ledOn();
-//      if (snar_status == SONAR_OVER_LIMIT_DISTANCE){
-//        Serial.println("Turn off Water Pump because the tank water is low");
-//        retValue = waterPumpOff();
-//      } else {
-//        retValue = waterPumpOn();
-//        Serial.print("Turn on Water Pump: ");
-//        Serial.println(retValue);
-//      }
-//
-//  } else {
-//      ledOff();
-//      retValue = waterPumpOff();
-//      Serial.print("Turn off Water Pump: ");
-//      Serial.println(retValue);      
-//  }
-
-//  Serial.println("\n");
-
-//  delay(500);
   return retValue;
 }
 /////////////////////////////////////////////////////////////////
@@ -118,7 +101,9 @@ void supplyWater(void)
   if (soilMoisturePercentage <= min_moisture)
   {
     diff_moisture = max_moisture - min_moisture;
-    debugLog("Diff moisture value (Max - Min): ", diff_moisture, NULL, DEBUG_DEV);
+    if (pre_diff_moisture != diff_moisture){
+      debugLog("Diff moisture value (Max - Min): ", diff_moisture, NULL, DEBUG_DEV);
+    }
 
     if (diff_moisture < 10){
       waterPumpOn();

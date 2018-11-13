@@ -28,7 +28,7 @@ int waterPumpOn(void)
 {
   int retValue = PUMP_NONE;
   if (alertWaterIsLow() == 0){
-    debugLog("water pump on", NONE_DATA, NULL, DEBUG_DEV);
+    //debugLog("water pump on", NONE_DATA, NULL, DEBUG_DEV);
     digitalWrite(waterPumpPin, HIGH);   // turn the water pump on (HIGH is the voltage level)
     ledOn();
     retValue = PUMP_ON;
@@ -47,7 +47,7 @@ int waterPumpOn(void)
 int waterPumpOff(void)
 {
   int retValue = PUMP_NONE;
-  debugLog("water pump off", NONE_DATA, NULL, DEBUG_DEV);
+  //debugLog("water pump off", NONE_DATA, NULL, DEBUG_DEV);
   digitalWrite(waterPumpPin, LOW);    // turn the water pump off by making the voltage LOW
   ledOff();
   retValue = PUMP_OFF;

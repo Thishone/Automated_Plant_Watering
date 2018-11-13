@@ -7,6 +7,9 @@ int bluetooth(void);
 void bluetoothSerial(void);
 void bluetoothSetup(void);
 
+#define BTserialRX 5
+#define BTserialTX 6
+
 //Added Bluetooth status check
 enum bt_status {
    BT_NONE = 0x00,

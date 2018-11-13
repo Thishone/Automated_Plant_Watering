@@ -6,9 +6,10 @@
 #include "waterPump.h"
 #include "analogInputOutput.h"
 #include "debugLog.h"
+#include "ezScrn.h"
 
-#define BTserialRX 5
-#define BTserialTX 6
+//#define BTserialRX 5
+//#define BTserialTX 6
 #define RX 0
 #define TX 1
 
@@ -75,16 +76,20 @@ int bluetooth(void)
       debugLog("MIN tempStr: ", NONE_DATA, tempStr, DEBUG_DEV);
       min_moisture = atoi(tempStr);
     }
-             
+    else if (strcmp("ez", token) == 0){
+      tempStr = strtok(NULL, delim);
+      debugLog("MIN tempStr: ", NONE_DATA, tempStr, DEBUG_DEV);
+      ezScrn_on = atoi(tempStr);
+    }
     if (strcmp(readData, "on") == 0)   // Checks whether value of data is equal to 1
     {
       retValue |= BT_READ_ON;  
-      debugLog("BT_READ_ON: ", retValue, NULL, DEBUG_DEV); 
+      //debugLog("BT_READ_ON: ", retValue, NULL, DEBUG_DEV); 
     }     
     else if (strcmp(readData, "off") == 0)   //  Checks whether value of data is equal to 0
     {
       retValue |= BT_READ_OFF;   
-      debugLog("BT_READ_OFF: ", retValue, NULL,DEBUG_DEV);  
+      //debugLog("BT_READ_OFF: ", retValue, NULL,DEBUG_DEV);  
     }
 
     memset(readData, '0', sizeof(readData));
