@@ -5,6 +5,7 @@ extern "C" {
 #endif
 void ezScrnSetup(void);
 void ezScrn(void);
+void replyToEzGUI(void);
 
 void recvWithStartEndMarkers(void);
 

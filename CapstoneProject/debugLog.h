@@ -11,7 +11,20 @@ enum debug_mode {
    DEBUG_DEV,
    DEBUG_RELEASE,
 };
-extern void debugLog(const char * string, int data, char * data_string, int mode);
+
+enum scrn_ind {
+   SCRN_NONE,
+   SCRN_OUTA,
+   SCRN_OUT_SLIDA,
+   SCRN_SLIDA,
+   SCRN_OUT_SLIDB,
+   SCRN_SLIDB,
+   SCRN_OUT_MOISTURE,
+   SCRN_OUT_TEMPERATURE,
+   SCRN_OUT_LIGHT
+};
+
+extern void debugLog(const char * string, int data, char * data_string, int mode, int scrn_ind);
 
 #ifdef __cplusplus
 } // extern "C"

@@ -4,8 +4,10 @@
 #include "blinkLed.h"
 #include "sonar.h"
 #include "debugLog.h"
+#include "ezScrn.h"
 
 extern int snar_status;
+extern boolean newData;
 
 #define PERCENT 37  //ASCII code number "%"
 
@@ -66,10 +68,9 @@ int ReadMoisture(void)
     soilMoisturePercentage = ((float)soilMoistureRawVal / MAX_MOISTURE_VALUE)*100.0;
     
     if ((int)pre_soilMoisturePercentage != (int)soilMoisturePercentage){
-      debugLog("Soil Moisture Percentage: ", soilMoisturePercentage, NULL, DEBUG_DEV);
+      debugLog("Soil Moisture: ", soilMoisturePercentage, NULL, DEBUG_DEV, SCRN_OUT_MOISTURE);
       pre_soilMoisturePercentage = soilMoisturePercentage;
     }
-    
   }
 
   return retValue;
@@ -84,7 +85,7 @@ int alertWaterIsLow(void)
 {
   int retValue = 0;
   if (snar_status == SONAR_OVER_LIMIT_DISTANCE){
-    debugLog("Turn off Water Pump because the tank water is low!!!", NONE_DATA, NULL, DEBUG_DEV);
+    debugLog("Turn off Water Pump because the tank water is low!!!", NONE_DATA, NULL, DEBUG_DEV, SCRN_OUTA);
     retValue = 1;
   }
   return retValue;
@@ -97,37 +98,36 @@ int alertWaterIsLow(void)
 /////////////////////////////////////////////////////////////////
 void supplyWater(void)
 {
-  
   if (soilMoisturePercentage <= min_moisture)
   {
     diff_moisture = max_moisture - min_moisture;
     if (pre_diff_moisture != diff_moisture){
-      debugLog("Diff moisture value (Max - Min): ", diff_moisture, NULL, DEBUG_DEV);
+      debugLog("Diff moisture value (Max - Min): ", diff_moisture, NULL, DEBUG_DEV, SCRN_OUTA);
     }
 
     if (diff_moisture < 10){
       waterPumpOn();
-      debugLog("wait for 3 second", NONE_DATA, NULL, DEBUG_DEV);
+      debugLog("wait for 3 second", NONE_DATA, NULL, DEBUG_DEV, SCRN_OUTA);
       delay(3000);  // wait for a second
     } else if (diff_moisture >= 10 && diff_moisture < 20){
       waterPumpOn();
-      debugLog("wait for 5 second", NONE_DATA, NULL, DEBUG_DEV);
+      debugLog("wait for 5 second", NONE_DATA, NULL, DEBUG_DEV, SCRN_OUTA);
       delay(5000);
     } else if (diff_moisture >= 20 && diff_moisture < 30){
       waterPumpOn();
-      debugLog("wait for 10 second", NONE_DATA, NULL, DEBUG_DEV);
+      debugLog("wait for 10 second", NONE_DATA, NULL, DEBUG_DEV, SCRN_OUTA);
       delay(10000);
     } else if (diff_moisture >= 30 && diff_moisture < 50){
       waterPumpOn();
-      debugLog("wait for 15 second", NONE_DATA, NULL, DEBUG_DEV);
+      debugLog("wait for 15 second", NONE_DATA, NULL, DEBUG_DEV, SCRN_OUTA);
       delay(15000);
     } else if (diff_moisture >= 50){
       waterPumpOn();
-      debugLog("wait for 20 second", NONE_DATA, NULL, DEBUG_DEV);
+      debugLog("wait for 20 second", NONE_DATA, NULL, DEBUG_DEV, SCRN_OUTA);
       delay(20000);
     }
     waterPumpOff();
-    debugLog("wait for 10 second", NONE_DATA, NULL, DEBUG_DEV);
+    debugLog("wait for 10 second", NONE_DATA, NULL, DEBUG_DEV, SCRN_OUTA);
     delay(10000);
   }
   else if (soilMoisturePercentage >= max_moisture)
@@ -156,7 +156,7 @@ void WriteMoisture(void)
 void ReadTemperature(void)
 {
   ReadTemperatureValue = analogRead(ReadTemperaturePin);     // read the input pi
-  debugLog("Temperature Value: ", ReadTemperatureValue, NULL, DEBUG_DEV);
+  debugLog("Temperature Value: ", ReadTemperatureValue, NULL, DEBUG_DEV, SCRN_OUT_TEMPERATURE);
 //  delay(500);
 }
 
@@ -181,7 +181,7 @@ void WriteTemperature(void)
 void ReadLight(void)
 {
   ReadLightValue = analogRead(ReadLightPin);     // read the input pi
-  debugLog("Light Value: ", ReadLightValue, NULL, DEBUG_DEV);
+  debugLog("Light Value: ", ReadLightValue, NULL, DEBUG_DEV, SCRN_OUT_LIGHT);
 //  delay(500);
 }
 

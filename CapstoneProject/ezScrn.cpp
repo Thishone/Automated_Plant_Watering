@@ -12,7 +12,7 @@ int oldSliderValue;
 char buttonValue[6];
 char oldButtonValue[6];
 
-const byte ledPin = 12;
+const byte ledPin = 13;
 const byte servoPin = 8;
 Servo myServo;
 
@@ -40,17 +40,32 @@ void ezScrnSetup(void) {
   Serial.println("<+newScrn, size=40x30, tleft=0x0, bg=green, fg=black>");
     // add an area for text from the Arduino to be displayed
   Serial.println("<+tOut, name=outA, size=38x10, tleft=1x1, bg=yellow, fg=black>");
-    // add a button that will operate an LED
-  Serial.println("<+btn, name=ledA, size=8x3, tleft=10x12, bg=black, fg=orange>");
+  
+   // add an area for text from the slidA to be displayed
+  Serial.println("<+tOut, name=outSlidA, size=16x2, tleft=2x12, bg=yellow, fg=black>");
     // add a slider to control a servo
-  Serial.println("<+slid, name=slidA, size=15x1, tleft=2x16, range=30x150x90x10>");
-    // add an area for text from the Arduino to be displayed
-  Serial.println("<+tOut, name=outB, size=38x2, tleft=1x18, bg=yellow, fg=black>");
+  Serial.println("<+slid, name=slidA, size=15x1, tleft=22x12, range=0x100x50x5>");
+
+   // add an area for text from the slidA to be displayed
+  Serial.println("<+tOut, name=outSlidB, size=16x2, tleft=2x15, bg=yellow, fg=black>");
+    // add a slider to control a servo
+  Serial.println("<+slid, name=slidB, size=15x1, tleft=22x15, range=0x100x50x5>"); //(min, max, position, step)
+
+   // add an area for text from the moisture to be displayed
+  Serial.println("<+tOut, name=outMoisture, size=16x2, tleft=2x20, bg=yellow, fg=black>");
+
+   // add an area for text from the tempture to be displayed
+  Serial.println("<+tOut, name=outTemp, size=16x2, tleft=2x23, bg=yellow, fg=black>");
+
+  // add an area for text from the light to be displayed
+  Serial.println("<+tOut, name=outLight, size=16x2, tleft=2x26, bg=yellow, fg=black>");
+  
     // add a QUIT button
   Serial.println("<+quit, name=Quit, size=8x2, tleft=30x25, bg=red, fg=black>");
     // terminate the design
+    
   Serial.println("<+endScrn>");
-  
+
   myServo.attach(servoPin);
   pinMode(ledPin, OUTPUT);
   digitalWrite(ledPin, ledState);
@@ -71,27 +86,7 @@ void moveServo() {
   }
 }
 
-void replyToEzGUI() {
-
-      // update button colour
-    Serial.print("<+btn, name=ledA, ");
-    if (ledState == HIGH) {
-      Serial.println("bg=white");
-    }
-    else {
-      Serial.println("bg=black");
-    }
-    Serial.print(">");
-
-      // add a message to textBox outA
-    Serial.print("<+outA, ");
-    if (ledState == HIGH) {
-      Serial.println("Led is ON");
-    }
-    else {
-      Serial.println("Led is OFF");
-    }
-    Serial.print(">");
+void replyToEzGUI(void) {
     
       // replace the text in textBox outB
     Serial.print("<-outB, ");
@@ -160,7 +155,6 @@ void ezScrn(void) {
   recvWithStartEndMarkers();
   if (newData == true) {
     parseData();
-    updateLED();
     moveServo();
     replyToEzGUI();
     newData = false;

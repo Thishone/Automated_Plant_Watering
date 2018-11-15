@@ -49,7 +49,7 @@ int sonar(void)
   
   // Prints the sonarDistance on the Serial Monitor
   if (pre_sonarDistance != sonarDistance){
-    debugLog("Sonar sonarDistance: ", sonarDistance, NULL, DEBUG_DEV);
+    debugLog("Sonar sonarDistance: ", sonarDistance, NULL, DEBUG_DEV, SCRN_OUTA);
   }
   
   

@@ -58,27 +58,27 @@ int bluetooth(void)
       readData[size] =' ';
       delay(500);
     }
-    debugLog("Bluetooth incoming data: ", NONE_DATA, readData, DEBUG_DEV);
+    debugLog("Bluetooth incoming data: ", NONE_DATA, readData, DEBUG_DEV, SCRN_OUTA);
     
     token = strtok(readData, delim);
 
-    debugLog("token: ", NONE_DATA, token, DEBUG_DEV);
+    debugLog("token: ", NONE_DATA, token, DEBUG_DEV, SCRN_OUTA);
     
     if (strcmp(MAX_MOISTURE, token) == 0)
     {
       tempStr = strtok(NULL, delim);
-      debugLog("MAX tempStr: ", NONE_DATA, tempStr, DEBUG_DEV);
+      debugLog("MAX tempStr: ", NONE_DATA, tempStr, DEBUG_DEV, SCRN_OUTA);
       max_moisture = atoi(tempStr);
     } 
     else if (strcmp(MIN_MOISTURE, token) == 0)
     {
       tempStr = strtok(NULL, delim);
-      debugLog("MIN tempStr: ", NONE_DATA, tempStr, DEBUG_DEV);
+      debugLog("MIN tempStr: ", NONE_DATA, tempStr, DEBUG_DEV, SCRN_OUTA);
       min_moisture = atoi(tempStr);
     }
     else if (strcmp("ez", token) == 0){
       tempStr = strtok(NULL, delim);
-      debugLog("MIN tempStr: ", NONE_DATA, tempStr, DEBUG_DEV);
+      debugLog("MIN tempStr: ", NONE_DATA, tempStr, DEBUG_DEV, SCRN_OUTA);
       ezScrn_on = atoi(tempStr);
     }
     if (strcmp(readData, "on") == 0)   // Checks whether value of data is equal to 1
@@ -117,7 +117,7 @@ void bluetoothSerial(void)
     //BTserial_readData = (char)BTserial.read();
     Serial.readBytes(BTserial_readData, READ_DATA_SIZE);
 
-    debugLog("bluetoothSerial incoming data: ", NONE_DATA, BTserial_readData, DEBUG_DEV);  
+    debugLog("bluetoothSerial incoming data: ", NONE_DATA, BTserial_readData, DEBUG_DEV, SCRN_OUTA);  
    
     memset(BTserial_readData, '0', sizeof(readData));
   }
