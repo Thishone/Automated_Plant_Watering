@@ -10,6 +10,7 @@ void replyToEzGUI(void);
 void recvWithStartEndMarkers(void);
 
 extern boolean ezScrn_on;
+extern boolean newData;
 
 #ifdef __cplusplus
 } // extern "C"

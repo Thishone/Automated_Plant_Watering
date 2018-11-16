@@ -13,30 +13,33 @@ Castone Project
 #include "ezScrn.h"
 
 //long baudRate = 115200;
-int baudRate = 9600;
+//int baudRate = 9600;
 unsigned long lastSerial = 0;
 
-#define SET_PERIOD 2
-#define READ_SENSORS_PERIOD   1000*SET_PERIOD
+#define READ_SENSORS_PERIOD   2000
 
 int snar_status = SONAR_NONE;
 int pump_status = PUMP_NONE;
 
-boolean ezScrn_on = 1;
+//boolean ezScrn_on = 1;
 
 void sensorsOperation(void);
 
 void setup() 
 {
-  if (ezScrn_on == 1){
+  //if (ezScrn_on == 1){
     Serial.begin(115200);              //  setup serial
     ezScrnSetup();
-  } else {
-    Serial.begin(9600);              //  setup serial
-  }
+  //} else {
+  //  Serial.begin(9600);              //  setup serial
+  //}
+#ifdef LED_FEATURE
     blinkLedSetup();
+#endif
     waterPumpSetup();
+#ifdef BLUETOOTH_FEATURE
     bluetoothSetup();
+#endif
     sonarSetup();
 }
 
@@ -48,8 +51,10 @@ void loop()
 }
 
 void sensorsOperation(void){
+#ifdef BLUETOOTH_FEATURE
   static int bt_status = BT_UNAVAILABLE;
-  
+#endif
+
   if (millis() - lastSerial >= READ_SENSORS_PERIOD) 
   {
     lastSerial = millis();

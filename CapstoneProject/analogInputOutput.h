@@ -5,13 +5,14 @@ extern "C" {
 #endif
 
 // Soil Moisture Sensor
-extern int ReadMoistureValue;
+void setMaxMoistureValue(int max);
+void setMinMoistureValue(int min);
+
 int ReadMoisture(void);
 void WriteMoisture(void);
 void supplyWater(void);
 int alertWaterIsLow(void);
-extern unsigned int  max_moisture;
-extern unsigned int  min_moisture;
+
 // Temperature Sensor
 extern int ReadTemperatureValue;
 void ReadTemperature(void);

@@ -1,3 +1,4 @@
+#ifdef BLUETOOTH_FEATURE
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 #include <Wstring.h>
@@ -8,13 +9,14 @@
 #include "debugLog.h"
 #include "ezScrn.h"
 
-//#define BTserialRX 5
-//#define BTserialTX 6
+
+#define BTserialRX 5
+#define BTserialTX 6
 #define RX 0
 #define TX 1
 
-#define MAX_MOISTURE "max"
-#define MIN_MOISTURE "min"
+//#define MAX_MOISTURE "max"
+//#define MIN_MOISTURE "min"
 
 SoftwareSerial BTserial(BTserialRX,BTserialTX);
 
@@ -58,38 +60,36 @@ int bluetooth(void)
       readData[size] =' ';
       delay(500);
     }
-    debugLog("Bluetooth incoming data: ", NONE_DATA, readData, DEBUG_DEV, SCRN_OUTA);
+    debugLog("Bluetooth incoming data: ", NONE_DATA, readData, SCRN_OUTA);
     
     token = strtok(readData, delim);
 
-    debugLog("token: ", NONE_DATA, token, DEBUG_DEV, SCRN_OUTA);
+    debugLog("token: ", NONE_DATA, token, SCRN_OUTA);
     
-    if (strcmp(MAX_MOISTURE, token) == 0)
+    if (strcmp("max", token) == 0)
     {
       tempStr = strtok(NULL, delim);
-      debugLog("MAX tempStr: ", NONE_DATA, tempStr, DEBUG_DEV, SCRN_OUTA);
+      debugLog("MAX tempStr: ", NONE_DATA, tempStr, SCRN_OUTA);
       max_moisture = atoi(tempStr);
     } 
-    else if (strcmp(MIN_MOISTURE, token) == 0)
+    else if (strcmp("min", token) == 0)
     {
       tempStr = strtok(NULL, delim);
-      debugLog("MIN tempStr: ", NONE_DATA, tempStr, DEBUG_DEV, SCRN_OUTA);
+      debugLog("MIN tempStr: ", NONE_DATA, tempStr, SCRN_OUTA);
       min_moisture = atoi(tempStr);
     }
     else if (strcmp("ez", token) == 0){
       tempStr = strtok(NULL, delim);
-      debugLog("MIN tempStr: ", NONE_DATA, tempStr, DEBUG_DEV, SCRN_OUTA);
+      debugLog("MIN tempStr: ", NONE_DATA, tempStr, SCRN_OUTA);
       ezScrn_on = atoi(tempStr);
     }
     if (strcmp(readData, "on") == 0)   // Checks whether value of data is equal to 1
     {
       retValue |= BT_READ_ON;  
-      //debugLog("BT_READ_ON: ", retValue, NULL, DEBUG_DEV); 
     }     
     else if (strcmp(readData, "off") == 0)   //  Checks whether value of data is equal to 0
     {
-      retValue |= BT_READ_OFF;   
-      //debugLog("BT_READ_OFF: ", retValue, NULL,DEBUG_DEV);  
+      retValue |= BT_READ_OFF;
     }
 
     memset(readData, '0', sizeof(readData));
@@ -117,8 +117,10 @@ void bluetoothSerial(void)
     //BTserial_readData = (char)BTserial.read();
     Serial.readBytes(BTserial_readData, READ_DATA_SIZE);
 
-    debugLog("bluetoothSerial incoming data: ", NONE_DATA, BTserial_readData, DEBUG_DEV, SCRN_OUTA);  
+    debugLog("bluetoothSerial incoming data: ", NONE_DATA, BTserial_readData, SCRN_OUTA);  
    
     memset(BTserial_readData, '0', sizeof(readData));
   }
 }
+
+#endif

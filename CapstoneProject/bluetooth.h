@@ -3,12 +3,10 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#ifdef BLUETOOTH_FEATU
 int bluetooth(void);
 void bluetoothSerial(void);
 void bluetoothSetup(void);
-
-#define BTserialRX 5
-#define BTserialTX 6
 
 //Added Bluetooth status check
 enum bt_status {
@@ -18,6 +16,7 @@ enum bt_status {
    BT_READ_OFF = 0x04,
    BT_UNAVAILABLE = 0x08,
 };
+#endif
 #ifdef __cplusplus
 } // extern "C"
 #endif

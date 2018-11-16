@@ -2,15 +2,21 @@
 #include <Arduino.h>
 #include <Servo.h>
 #include "ezScrn.h"
+#include "debugLog.h"
+#include "analogInputOutput.h"
 
 const byte numChars = 90;
 char receivedChars[numChars];
 boolean newData = false;
 
-int sliderValue;
-int oldSliderValue;
-char buttonValue[6];
-char oldButtonValue[6];
+int sliderMaxValue = 0;
+int oldSliderMaxValue = 0;
+
+int sliderMinValue = 0;
+int oldSliderMinValue = 0;
+
+//char buttonValue[6];
+//char oldButtonValue[6];
 
 const byte ledPin = 13;
 const byte servoPin = 8;
@@ -19,6 +25,12 @@ Servo myServo;
 byte servoPos = 0;
 byte ledState = 0;
 
+/////////////////////////////////////////////////////////////////
+// FUNCTION      : ezScrnSetup()
+// DESCRIPTION   : This function setup the screen
+// PARAMETERS   :   
+// RETURNS       : none
+/////////////////////////////////////////////////////////////////
 void ezScrnSetup(void) {
   
   //Serial.begin(115200);
@@ -37,19 +49,19 @@ void ezScrnSetup(void) {
 
   Serial.println("<Arduino is ready>");
     // initiate the screen design
-  Serial.println("<+newScrn, size=40x30, tleft=0x0, bg=green, fg=black>");
+  Serial.println("<+newScrn, size=40x34, tleft=0x0, bg=green, fg=black>");
     // add an area for text from the Arduino to be displayed
   Serial.println("<+tOut, name=outA, size=38x10, tleft=1x1, bg=yellow, fg=black>");
   
    // add an area for text from the slidA to be displayed
-  Serial.println("<+tOut, name=outSlidA, size=16x2, tleft=2x12, bg=yellow, fg=black>");
+  Serial.println("<+tOut, name=outSlidMax, size=16x2, tleft=2x12, bg=yellow, fg=black>");
     // add a slider to control a servo
-  Serial.println("<+slid, name=slidA, size=15x1, tleft=22x12, range=0x100x50x5>");
+  Serial.println("<+slid, name=slidMax, size=15x1, tleft=22x12, range=0x100x0x5>");
 
    // add an area for text from the slidA to be displayed
-  Serial.println("<+tOut, name=outSlidB, size=16x2, tleft=2x15, bg=yellow, fg=black>");
+  Serial.println("<+tOut, name=outSlidMin, size=16x2, tleft=2x15, bg=yellow, fg=black>");
     // add a slider to control a servo
-  Serial.println("<+slid, name=slidB, size=15x1, tleft=22x15, range=0x100x50x5>"); //(min, max, position, step)
+  Serial.println("<+slid, name=slidMin, size=15x1, tleft=22x15, range=0x100x0x5>"); //(min, max, position, step)
 
    // add an area for text from the moisture to be displayed
   Serial.println("<+tOut, name=outMoisture, size=16x2, tleft=2x20, bg=yellow, fg=black>");
@@ -59,9 +71,12 @@ void ezScrnSetup(void) {
 
   // add an area for text from the light to be displayed
   Serial.println("<+tOut, name=outLight, size=16x2, tleft=2x26, bg=yellow, fg=black>");
+
+  // add an area for text from the sonar distace to be displayed
+  Serial.println("<+tOut, name=outSonar, size=16x2, tleft=2x29, bg=yellow, fg=black>");
   
     // add a QUIT button
-  Serial.println("<+quit, name=Quit, size=8x2, tleft=30x25, bg=red, fg=black>");
+  Serial.println("<+quit, name=Quit, size=8x2, tleft=30x30, bg=red, fg=black>");
     // terminate the design
     
   Serial.println("<+endScrn>");
@@ -69,34 +84,62 @@ void ezScrnSetup(void) {
   myServo.attach(servoPin);
   pinMode(ledPin, OUTPUT);
   digitalWrite(ledPin, ledState);
+  replyToEzGUI();
 }
 
 
 
-void updateLED() {
-  if (strcmp(buttonValue, "ledA") == 0) {
-    ledState = ! ledState;
-    digitalWrite(ledPin, ledState);
-  }
-}
+//void updateLED() {
+//  if (strcmp(buttonValue, "ledA") == 0) {
+//    ledState = ! ledState;
+//    digitalWrite(ledPin, ledState);
+//  }
+//}
 
+/////////////////////////////////////////////////////////////////
+// FUNCTION      : moveServo()
+// DESCRIPTION   : 
+// PARAMETERS   :   
+// RETURNS       : none
+/////////////////////////////////////////////////////////////////
 void moveServo() {
-  if (sliderValue != oldSliderValue) {
-    myServo.write(sliderValue);
+  if (sliderMaxValue != oldSliderMaxValue) {
+    myServo.write(sliderMaxValue);
+  }
+
+  if (sliderMinValue != oldSliderMinValue) {
+    myServo.write(sliderMinValue);
   }
 }
 
+/////////////////////////////////////////////////////////////////
+// FUNCTION      : replyToEzGUI()
+// DESCRIPTION   : 
+// PARAMETERS   :   
+// RETURNS       : none
+/////////////////////////////////////////////////////////////////
 void replyToEzGUI(void) {
-    
       // replace the text in textBox outB
-    Serial.print("<-outB, ");
-    Serial.print("Slider Position ");
-    Serial.print(sliderValue);
+    Serial.print("<-outSlidMax, ");
+    Serial.print("Moisture Max Value: ");
+    Serial.print(sliderMaxValue);
+    setMaxMoistureValue(sliderMaxValue);
     Serial.print(">");
+
+    Serial.print("<-outSlidMin, ");
+    Serial.print("Moisture Min Value: ");
+    Serial.print(sliderMinValue);
+    setMinMoistureValue(sliderMinValue);
+    Serial.print(">");    
   }
 
 
-
+/////////////////////////////////////////////////////////////////
+// FUNCTION      : recvWithStartEndMarkers()
+// DESCRIPTION   : 
+// PARAMETERS   :   
+// RETURNS       : none
+/////////////////////////////////////////////////////////////////
 void recvWithStartEndMarkers() {
   static boolean recvInProgress = false;
   static byte ndx = 0;
@@ -123,7 +166,6 @@ void recvWithStartEndMarkers() {
           newData = true;
         }
       }
-
       else if (rc == startMarker) {
         recvInProgress = true;
       }
@@ -131,6 +173,12 @@ void recvWithStartEndMarkers() {
   }
 }
 
+/////////////////////////////////////////////////////////////////
+// FUNCTION      : parseData()
+// DESCRIPTION   : 
+// PARAMETERS   :   
+// RETURNS       : none
+/////////////////////////////////////////////////////////////////
 void parseData() {
 
     // split the data into its parts
@@ -138,16 +186,20 @@ void parseData() {
     // in this demo the data will be sliderValue and buttonValue, in that order
   
     // save the existing values in case they are needed for comparison
-  oldSliderValue = sliderValue;
-  strcpy(oldButtonValue, buttonValue);
+  oldSliderMaxValue = sliderMaxValue;
+  oldSliderMinValue = sliderMinValue;
+  //strcpy(oldButtonValue, buttonValue);
     
   char * strtokIndx; // this is used by strtok() as an index
-  
+
   strtokIndx = strtok(receivedChars,","); // find the first part
-  sliderValue = atoi(strtokIndx);
+  sliderMaxValue = atoi(strtokIndx);
+
+  strtokIndx = strtok(NULL, ",");
+  sliderMinValue = atoi(strtokIndx);
   
   strtokIndx = strtok(NULL, ",");  // find the next part
-  strcpy(buttonValue, strtokIndx);
+  //strcpy(buttonValue, strtokIndx);
 
 }
 

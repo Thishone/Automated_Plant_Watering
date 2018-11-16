@@ -3,11 +3,12 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+#ifdef LED_FEATUR
 void blinkLedSetup(void);
 void blinkOnOff(void);
 void ledOn(void);
 void ledOff(void);
+#endif
 #ifdef __cplusplus
 } // extern "C"
 #endif
