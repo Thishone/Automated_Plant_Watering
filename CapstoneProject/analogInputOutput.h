@@ -1,3 +1,9 @@
+/*
+ * analogInputOutput.h
+ *
+ *  Created on: Nov 15, 2018
+ *      Author: Jin Taek Lee, Thishone Wijayakumar, Ajo Cherian Thomas
+ */
 #ifndef _ANALOG_INPUT_OUTPUT_
 #define _ANALOG_INPUT_OUTPUT_
 #ifdef __cplusplus
@@ -22,7 +28,7 @@ void WriteTemperature(void);
 extern int ReadLightValue;
 void ReadLight(void);
 void WriteLight(void);
-
+void learnSupplyWater(void);
 #ifdef __cplusplus
 } // extern "C"
 #endif

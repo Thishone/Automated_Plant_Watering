@@ -1,4 +1,9 @@
-// simple program to demo EzGUI
+/*
+ * ezScrn.cpp
+ *
+ *  Created on: Nov 15, 2018
+ *      Author: Jin Taek Lee, Thishone Wijayakumar, Ajo Cherian Thomas
+ */
 #include <Arduino.h>
 #include <Servo.h>
 #include "ezScrn.h"
@@ -15,9 +20,6 @@ int oldSliderMaxValue = 0;
 int sliderMinValue = 0;
 int oldSliderMinValue = 0;
 
-//char buttonValue[6];
-//char oldButtonValue[6];
-
 const byte ledPin = 13;
 const byte servoPin = 8;
 Servo myServo;
@@ -31,10 +33,9 @@ byte ledState = 0;
 // PARAMETERS   :   
 // RETURNS       : none
 /////////////////////////////////////////////////////////////////
-void ezScrnSetup(void) {
-  
-  //Serial.begin(115200);
-    // wait for python to send <Python ready>
+void ezScrnSetup(void) 
+{
+  // wait for python to send <Python ready>
 	boolean startReceived = false;
 	while (startReceived == false) {
 		newData = false;
@@ -73,7 +74,7 @@ void ezScrnSetup(void) {
   Serial.println("<+tOut, name=outLight, size=16x2, tleft=2x26, bg=yellow, fg=black>");
 
   // add an area for text from the sonar distace to be displayed
-  Serial.println("<+tOut, name=outSonar, size=16x2, tleft=2x29, bg=yellow, fg=black>");
+  Serial.println("<+tOut, name=outSonar, size=24x2, tleft=2x29, bg=yellow, fg=black>");
   
     // add a QUIT button
   Serial.println("<+quit, name=Quit, size=8x2, tleft=30x30, bg=red, fg=black>");
@@ -87,14 +88,6 @@ void ezScrnSetup(void) {
   replyToEzGUI();
 }
 
-
-
-//void updateLED() {
-//  if (strcmp(buttonValue, "ledA") == 0) {
-//    ledState = ! ledState;
-//    digitalWrite(ledPin, ledState);
-//  }
-//}
 
 /////////////////////////////////////////////////////////////////
 // FUNCTION      : moveServo()
@@ -118,20 +111,21 @@ void moveServo() {
 // PARAMETERS   :   
 // RETURNS       : none
 /////////////////////////////////////////////////////////////////
-void replyToEzGUI(void) {
-      // replace the text in textBox outB
-    Serial.print("<-outSlidMax, ");
-    Serial.print("Moisture Max Value: ");
-    Serial.print(sliderMaxValue);
-    setMaxMoistureValue(sliderMaxValue);
-    Serial.print(">");
+void replyToEzGUI(void) 
+{
+    // replace the text in textBox outB
+  Serial.print("<-outSlidMax, ");
+  Serial.print("Moisture Max Value: ");
+  Serial.print(sliderMaxValue);
+  setMaxMoistureValue(sliderMaxValue);
+  Serial.print(">");
 
-    Serial.print("<-outSlidMin, ");
-    Serial.print("Moisture Min Value: ");
-    Serial.print(sliderMinValue);
-    setMinMoistureValue(sliderMinValue);
-    Serial.print(">");    
-  }
+  Serial.print("<-outSlidMin, ");
+  Serial.print("Moisture Min Value: ");
+  Serial.print(sliderMinValue);
+  setMinMoistureValue(sliderMinValue);
+  Serial.print(">");    
+}
 
 
 /////////////////////////////////////////////////////////////////
@@ -203,6 +197,12 @@ void parseData() {
 
 }
 
+/////////////////////////////////////////////////////////////////
+// FUNCTION      : parseData()
+// DESCRIPTION   : 
+// PARAMETERS   :   
+// RETURNS       : none
+/////////////////////////////////////////////////////////////////
 void ezScrn(void) {
   recvWithStartEndMarkers();
   if (newData == true) {

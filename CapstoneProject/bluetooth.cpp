@@ -1,3 +1,9 @@
+/*
+ * bluetooth.cpp
+ *
+ *  Created on: Nov 15, 2018
+ *      Author: Jin Taek Lee, Thishone Wijayakumar, Ajo Cherian Thomas
+ */
 #ifdef BLUETOOTH_FEATURE
 #include <Arduino.h>
 #include <SoftwareSerial.h>
@@ -89,7 +95,7 @@ int bluetooth(void)
     }     
     else if (strcmp(readData, "off") == 0)   //  Checks whether value of data is equal to 0
     {
-      retValue |= BT_READ_OFF;
+      retValue |= BT_READ_OFF;   
     }
 
     memset(readData, '0', sizeof(readData));

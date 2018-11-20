@@ -1,3 +1,9 @@
+/*
+ * analogInputOutput.cpp
+ *
+ *  Created on: Nov 15, 2018
+ *      Author: Jin Taek Lee, Thishone Wijayakumar, Ajo Cherian Thomas
+ */
 #include <Arduino.h>
 #include "analogInputOutput.h"
 #include "waterPump.h"
@@ -9,14 +15,16 @@
 extern int snar_status;
 extern boolean newData;
 
+extern int learnTest;
+
 //#define PERCENT 37  //ASCII code number "%"
 
 // Data of Soil Moisture Sensor
 //input voltages between 0 and 5 volts into integer values between 0 and 1023
-#define MAX_INTEGER_VOLT_VALUE 1023
+#define MAX_INTEGER_VOLT_VALUE 600 //1023
 
 //Max raw value for 100% moisture is 800.
-#define MAX_MOISTURE_VALUE 800.0
+#define MAX_MOISTURE_VALUE 280.0 //800.0
 
 //Turn on/off Water Pump 
 #define WATER_PUMP_THRESHOLD_VALUE 35.0
@@ -29,7 +37,7 @@ unsigned int old_diff_moisture = 0;
 
 int soilMoistureRawVal = 0;
 float soilMoisturePercentage = 0;
-float old_soilMoisturePercentage = 0;
+float old_soilMoisturePercentage = 100;
 
 const int ReadMoisturePin = 0;     // connected to analog pin 0
                                    // outside leads to ground and +5V
@@ -48,8 +56,9 @@ const int ReadLightPin = 2;     // connected to analog pin 1
 
 const int WriteLightPin = 10; 
 int ReadLightValue = 0;   // variable to store the value read
-int old_ReadLightValue = 0;
+int old_ReadLightValue = 100;
 
+int waterPumpTime=0;
 
 void setMaxMoistureValue(int max)
 {
@@ -77,11 +86,8 @@ int ReadMoisture(void)
   if (soilMoistureRawVal < MAX_MOISTURE_VALUE)
   {
     soilMoisturePercentage = ((float)soilMoistureRawVal / MAX_MOISTURE_VALUE)*100.0;
-    
-    if ((int)old_soilMoisturePercentage != (int)soilMoisturePercentage){
-      debugLog("Soil Moisture: ", soilMoisturePercentage, NULL, SCRN_OUT_MOISTURE);
-      old_soilMoisturePercentage = soilMoisturePercentage;
-    }
+
+    debugLog("Soil Moisture: ", soilMoisturePercentage, NULL, SCRN_OUT_MOISTURE);
   }
 
   return retValue;
@@ -102,6 +108,43 @@ int alertWaterIsLow(void)
   return retValue;
 }
 /////////////////////////////////////////////////////////////////
+// FUNCTION      : learnSupplyWater()
+// DESCRIPTION   : This function supplys Water
+// PARAMETERS   :   
+// RETURNS       : none
+/////////////////////////////////////////////////////////////////
+void learnSupplyWater(void)
+{
+  static int waitSecondAfterPump = 0;
+  static int measurePotSize = 0;
+  
+  if ((soilMoisturePercentage - old_soilMoisturePercentage <= 10))
+  {  
+    if (waitSecondAfterPump == 0)
+    {
+      debugLog("Learn supplyWater ", NONE_DATA, NULL, SCRN_OUTA);
+      waterPumpOn();
+      delay(3000);
+      debugLog("wait for 3 second", NONE_DATA, NULL, SCRN_OUTA);
+      waterPumpOff();
+      waitSecondAfterPump = 10;
+    
+      old_soilMoisturePercentage = soilMoisturePercentage;
+      
+      measurePotSize ++;
+      debugLog("measurePotSize ", measurePotSize, NULL, SCRN_OUTA);
+    } else {
+      waitSecondAfterPump --;
+      debugLog("wait After Pump ", waitSecondAfterPump, NULL, SCRN_OUTA);
+    }
+  } else {
+    waterPumpTime = measurePotSize * 3000;
+    learnTest = 0;
+    debugLog("water Pump Time ", waterPumpTime, NULL, SCRN_OUTA);
+  }
+}
+
+/////////////////////////////////////////////////////////////////
 // FUNCTION      : supplyWater()
 // DESCRIPTION   : This function supplys Water
 // PARAMETERS   :   
@@ -109,43 +152,27 @@ int alertWaterIsLow(void)
 /////////////////////////////////////////////////////////////////
 void supplyWater(void)
 {
-  if (soilMoisturePercentage <= min_moisture)
+  static int waitSecondAfterPump = 0;
+  
+  debugLog("Regular supplyWater ", NONE_DATA, NULL, SCRN_OUTA);
+  //if (soilMoisturePercentage <= min_moisture)
+  if ((soilMoisturePercentage - old_soilMoisturePercentage <= 10))
   {
-    diff_moisture = max_moisture - min_moisture;
-    if (old_diff_moisture != diff_moisture){
-      debugLog("Diff moisture value (Max - Min): ", diff_moisture, NULL, SCRN_OUTA);
-      old_diff_moisture = diff_moisture;
-    }
-
-    if (diff_moisture < 10){
+    if (waitSecondAfterPump == 0)
+    {
+      debugLog("Regular supplyWater ", NONE_DATA, NULL, SCRN_OUTA);
       waterPumpOn();
       debugLog("wait for 3 second", NONE_DATA, NULL, SCRN_OUTA);
-      delay(3000);  // wait for a second
-    } else if (diff_moisture >= 10 && diff_moisture < 20){
-      waterPumpOn();
-      debugLog("wait for 5 second", NONE_DATA, NULL, SCRN_OUTA);
-      delay(5000);
-    } else if (diff_moisture >= 20 && diff_moisture < 30){
-      waterPumpOn();
-      debugLog("wait for 10 second", NONE_DATA, NULL, SCRN_OUTA);
-      delay(10000);
-    } else if (diff_moisture >= 30 && diff_moisture < 50){
-      waterPumpOn();
-      debugLog("wait for 15 second", NONE_DATA, NULL, SCRN_OUTA);
-      delay(15000);
-    } else if (diff_moisture >= 50){
-      waterPumpOn();
-      debugLog("wait for 20 second", NONE_DATA, NULL, SCRN_OUTA);
-      delay(20000);
+      delay(3000);
+      //delay(waterPumpTime);  // wait for a second
+      
+      waterPumpOff();
+      waitSecondAfterPump = 10;
+    } else {
+      waitSecondAfterPump --;
+      debugLog("wait After Pump ", waitSecondAfterPump, NULL, SCRN_OUTA);
     }
-    waterPumpOff();
-    debugLog("wait for 10 second", NONE_DATA, NULL, SCRN_OUTA);
-    delay(10000);
-  }
-  else if (soilMoisturePercentage >= max_moisture)
-  {
-    waterPumpOff();
-  }
+  } 
 }
 /////////////////////////////////////////////////////////////////
 // FUNCTION      : WriteMoisture()

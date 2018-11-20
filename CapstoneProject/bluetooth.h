@@ -1,3 +1,9 @@
+/*
+ * bluetooth.h
+ *
+ *  Created on: Nov 15, 2018
+ *      Author: Jin Taek Lee, Thishone Wijayakumar, Ajo Cherian Thomas
+ */
 #ifndef _BLUETOOTH_H_
 #define _BLUETOOTH_H_
 #ifdef __cplusplus

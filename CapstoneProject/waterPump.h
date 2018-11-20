@@ -1,3 +1,9 @@
+/*
+ * waterPump.h
+ *
+ *  Created on: Nov 15, 2018
+ *      Author: Jin Taek Lee, Thishone Wijayakumar, Ajo Cherian Thomas
+ */
 #ifndef _WATER_PUMP_H_
 #define _WATER_PUMP_H_
 #ifdef __cplusplus

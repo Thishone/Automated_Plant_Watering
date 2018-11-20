@@ -1,3 +1,9 @@
+/*
+ * sonar.h
+ *
+ *  Created on: Nov 15, 2018
+ *      Author: Jin Taek Lee, Thishone Wijayakumar, Ajo Cherian Thomas
+ */
 #ifndef _SONAR_H_
 #define _SONAR_H_
 #ifdef __cplusplus

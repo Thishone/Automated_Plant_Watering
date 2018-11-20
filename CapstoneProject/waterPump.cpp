@@ -1,3 +1,9 @@
+/*
+ * waterPump.cpp
+ *
+ *  Created on: Nov 15, 2018
+ *      Author: Jin Taek Lee, Thishone Wijayakumar, Ajo Cherian Thomas
+ */
 #include <Arduino.h>
 #include "waterPump.h"
 #include "blinkLed.h"
@@ -29,6 +35,7 @@ int waterPumpOn(void)
   int retValue = PUMP_NONE;
   if (alertWaterIsLow() == 0){
     digitalWrite(waterPumpPin, HIGH);   // turn the water pump on (HIGH is the voltage level)
+    //debugLog("water Pump On!", NONE_DATA, NULL, SCRN_OUTA);
 #ifdef LED_FEATURE
     ledOn();
 #endif
@@ -49,6 +56,7 @@ int waterPumpOff(void)
 {
   int retValue = PUMP_NONE;
   digitalWrite(waterPumpPin, LOW);    // turn the water pump off by making the voltage LOW
+  //debugLog("water Pump Off!", NONE_DATA, NULL, SCRN_OUTA);
 #ifdef LED_FEATURE
   ledOff();
 #endif

@@ -1,3 +1,9 @@
+/*
+ * debugLog.cpp
+ *
+ *  Created on: Nov 15, 2018
+ *      Author: Jin Taek Lee, Thishone Wijayakumar, Ajo Cherian Thomas
+ */
 #include <Arduino.h>
 #include "debugLog.h"
 #include "ezScrn.h"
@@ -15,9 +21,17 @@
 /////////////////////////////////////////////////////////////////
 void debugLog(const char * string, int data, char *data_string, int scrn_ind)
 {
+  static int addLine = 0;
 #ifdef DEBUG_LOG
   if (scrn_ind == SCRN_OUTA){
-    Serial.print("<+outA, ");
+    if (addLine < 5){
+      Serial.print("<+outA, ");
+      addLine ++;
+    } else {
+      addLine = 0;
+      Serial.print("<-outA, ");
+    }
+
   } else if (scrn_ind == SCRN_OUT_SLID_MAX){
     Serial.print("<-outSlidMax, ");
   } else if (scrn_ind == SCRN_OUT_SLID_MIN){

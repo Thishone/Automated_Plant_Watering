@@ -1,3 +1,9 @@
+/*
+ * debugLog.h
+ *
+ *  Created on: Nov 15, 2018
+ *      Author: Jin Taek Lee, Thishone Wijayakumar, Ajo Cherian Thomas
+ */
 #ifndef _DEBUG_LOG_
 #define _DEBUG_LOG_
 #ifdef __cplusplus
