@@ -84,7 +84,7 @@ void blinkGreenOff(void)
 /////////////////////////////////////////////////////////////////
 void blinkYellowOn(void)
 {
-    digitalWrite(ledYellowPin, HIGH);   // turn the LED on (HIGH is the voltage level)
+  digitalWrite(ledYellowPin, HIGH);   // turn the LED on (HIGH is the voltage level)
 }
 
 /////////////////////////////////////////////////////////////////
@@ -95,7 +95,7 @@ void blinkYellowOn(void)
 /////////////////////////////////////////////////////////////////
 void blinkYellowOff(void)
 {
-    digitalWrite(ledYellowPin, LOW);    // turn the LED off by making the voltage LOW
+  digitalWrite(ledYellowPin, LOW);    // turn the LED off by making the voltage LOW
 }
 
 /////////////////////////////////////////////////////////////////
@@ -106,7 +106,7 @@ void blinkYellowOff(void)
 /////////////////////////////////////////////////////////////////
 void blinkRedOn(void)
 {
-    digitalWrite(ledRedPin, HIGH);   // turn the LED on (HIGH is the voltage level)
+  digitalWrite(ledRedPin, HIGH);   // turn the LED on (HIGH is the voltage level)
 }
 
 /////////////////////////////////////////////////////////////////
@@ -127,9 +127,9 @@ void blinkRedOff(void)
 /////////////////////////////////////////////////////////////////
 void blinkOnOff(void)
 {
-    digitalWrite(ledPin, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(1000);                       // wait for a second
-    digitalWrite(ledPin, LOW);    // turn the LED off by making the voltage LOW
-    delay(1000);                       // wait for a second
+  digitalWrite(ledPin, HIGH);   // turn the LED on (HIGH is the voltage level)
+  delay(1000);                       // wait for a second
+  digitalWrite(ledPin, LOW);    // turn the LED off by making the voltage LOW
+  delay(1000);                       // wait for a second
 }
 #endif

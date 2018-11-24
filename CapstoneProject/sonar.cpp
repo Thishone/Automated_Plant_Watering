@@ -29,12 +29,24 @@ long duration;
 #define LOW_WATER_LEVEL      5
 #define SPEED_SOUND 0.034
 
+/////////////////////////////////////////////////////////////////
+// FUNCTION      : sonarSetup()
+// DESCRIPTION   : 
+// PARAMETERS   :   
+// RETURNS       : none
+/////////////////////////////////////////////////////////////////
 void sonarSetup(void)
 {
   pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
   pinMode(echoPin, INPUT); // Sets the echoPin as an Input
 }
 
+/////////////////////////////////////////////////////////////////
+// FUNCTION      : sonar()
+// DESCRIPTION   : 
+// PARAMETERS   :   
+// RETURNS       : none
+/////////////////////////////////////////////////////////////////
 sonar_st sonar(void)
 {
   sonar_st retValue = SONAR_NONE;

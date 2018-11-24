@@ -20,7 +20,8 @@ unsigned long lastSerial = 0;
 
 sonar_st snar_status = SONAR_NONE;
 
-boolean learnTest = 1;
+boolean learningPotSize = false;
+boolean regularWatering = false;
 
 void sensorsOperation(void);
 
@@ -43,7 +44,6 @@ void setup()
 // the loop function runs over and over again forever
 void loop() 
 {
-  //ezScrn();
   sensorsOperation();
   delay(1000);
 }
@@ -63,9 +63,11 @@ void sensorsOperation(void)
     //soil Moisture
     ReadMoisture();
     
-    if (learnTest == 1){
+    if (learningPotSize == true){
       learnSupplyWater();
-    } else {
+    } 
+    
+    if (regularWatering == true) {
       supplyWater();
     }
     
@@ -77,6 +79,8 @@ void sensorsOperation(void)
     //light
     ReadLight();
 
-    ReadOverflow();
+    if (learningPotSize == false){
+      ReadOverflow();
+    }
   }
 }

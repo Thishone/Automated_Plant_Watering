@@ -59,7 +59,7 @@ int waterPumpOff(void)
 {
   waterPump_st retValue = PUMP_NONE;
   digitalWrite(waterPumpPin, LOW);    // turn the water pump off by making the voltage LOW
-  debugLog("water Pump Off", NONE_DATA, NULL, SCRN_OUTA);
+  //debugLog("water Pump Off", NONE_DATA, NULL, SCRN_OUTA);
 #ifdef LED_FEATURE
   ledOff();
 #endif

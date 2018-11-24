@@ -35,6 +35,8 @@ void debugLog(const char * string, int data, char *data_string, int scrn_ind)
     Serial.print("<-outSlidMin, ");    
   } else if (scrn_ind == SCRN_OUT_MOISTURE){
     Serial.print("<-outMoisture, ");
+  } else if (scrn_ind == SCRN_OUT_WATERING_TIME){
+    Serial.print("<-outWateringTime, ");
   } else if (scrn_ind == SCRN_OUT_HUMIDITY){
     Serial.print("<-outHumidity, ");
   } else if (scrn_ind == SCRN_OUT_TEMPERATURE){

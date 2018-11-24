@@ -14,7 +14,8 @@
 #include "ezScrn.h"
 
 extern boolean newData;
-extern boolean learnTest;
+extern boolean learningPotSize;
+extern boolean regularWatering;
 
 dht DHT;
 
@@ -126,7 +127,8 @@ void learnSupplyWater(void)
 {
   static int waitSecondAfterPump = 0;
   static int measurePotSize = 0;
-  
+  debugLog("soilMoisturePercentage ", soilMoisturePercentage, NULL, SCRN_OUTA);
+  debugLog("old_soilMoisturePercentage ", old_soilMoisturePercentage, NULL, SCRN_OUTA);
   if ((soilMoisturePercentage - old_soilMoisturePercentage <= 10))
   {  
     if (waitSecondAfterPump == 0)
@@ -139,17 +141,17 @@ void learnSupplyWater(void)
       waitSecondAfterPump = ONE_MINUTE;
     
       old_soilMoisturePercentage = soilMoisturePercentage;
-      
+      //old_soilMoisturePercentage = 50; for test
       measurePotSize ++;
       //debugLog("measurePotSize ", measurePotSize, NULL, SCRN_OUTA);
     } else {
       waitSecondAfterPump --;
-      debugLog("Wait for seconds: ", waitSecondAfterPump, NULL, SCRN_OUTA);
+      debugLog("Learning Wait for seconds: ", waitSecondAfterPump, NULL, SCRN_OUTA);
     }
   } else {
     wateringTime = measurePotSize * TREE_SECONDS;
-    learnTest = 0;
-    debugLog(WATER_PUMP_TIME_STR, wateringTime, NULL, SCRN_OUTA);
+    learningPotSize = false;
+    debugLog(WATER_PUMP_TIME_STR, wateringTime, NULL, SCRN_OUT_WATERING_TIME);
   }
 }
 
@@ -198,7 +200,7 @@ void supplyWater(void)
         //underMin = false;
       } else {
         waitWateringTime --;
-        debugLog("Wait for seconds: ", waitWateringTime, NULL, SCRN_OUTA);
+        debugLog("Regular Wait for seconds: ", waitWateringTime, NULL, SCRN_OUTA);
         if (overMax == true){
           waitWateringTime = 0;
         }
@@ -210,7 +212,12 @@ void supplyWater(void)
   }
 }
 
-
+/////////////////////////////////////////////////////////////////
+// FUNCTION      : DHT11_HumiditySensor()
+// DESCRIPTION   : This function reads the value of Humidity
+// PARAMETERS   :   
+// RETURNS       : none
+/////////////////////////////////////////////////////////////////
 void DHT11_HumiditySensor(void)
 {
   int ReadHumidityValue = DHT.read11(DHT11_PIN);
@@ -231,7 +238,6 @@ void ReadLight(void)
   ReadLightValue = analogRead(ReadLightPin);     // read the input pin
 
   debugLog(LIGHT_STR, ReadLightValue, NULL, SCRN_OUT_LIGHT);
-
 }
 
 
@@ -255,6 +261,11 @@ void ReadOverflow(void)
   {
     soilOverflowPercentage = ((float)soilOverflowRawVal / MAX_OVERFLOW_VALUE)*100.0;
 
-    debugLog(OVERFLOW_STR, soilOverflowPercentage, NULL, SCRN_OUT_OVERFLOW);
+    if (soilOverflowPercentage > 15){
+      debugLog("Overflow Pump Stop ", soilOverflowPercentage, NULL, SCRN_OUT_OVERFLOW);
+      waterPumpOff();
+    } else {
+      debugLog(OVERFLOW_STR, soilOverflowPercentage, NULL, SCRN_OUT_OVERFLOW);
+    }
   }
 }
