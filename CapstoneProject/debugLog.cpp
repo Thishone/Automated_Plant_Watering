@@ -8,6 +8,7 @@
 #include "debugLog.h"
 #include "ezScrn.h"
 
+#define DISP_LINE 7
 /////////////////////////////////////////////////////////////////
 // FUNCTION      : debugLog()
 // DESCRIPTION   : This function use for debug
@@ -17,9 +18,10 @@
 void debugLog(const char * string, int data, char *data_string, int scrn_ind)
 {
   static int addLine = 0;
+
 #ifdef DEBUG_LOG
   if (scrn_ind == SCRN_OUTA){
-    if (addLine < 5){
+    if (addLine < DISP_LINE){
       Serial.print("<+outA, ");
       addLine ++;
     } else {
@@ -32,13 +34,15 @@ void debugLog(const char * string, int data, char *data_string, int scrn_ind)
   } else if (scrn_ind == SCRN_OUT_SLID_MIN){
     Serial.print("<-outSlidMin, ");    
   } else if (scrn_ind == SCRN_OUT_MOISTURE){
-    Serial.print("<-outMoisture, ");    
-  } else if (scrn_ind == SCRN_OUT_TEMPERATURE){
-    Serial.print("<-outTemp, ");
+    Serial.print("<-outMoisture, ");
   } else if (scrn_ind == SCRN_OUT_HUMIDITY){
     Serial.print("<-outHumidity, ");
+  } else if (scrn_ind == SCRN_OUT_TEMPERATURE){
+    Serial.print("<-outTemp, ");
   } else if (scrn_ind == SCRN_OUT_LIGHT){
-    Serial.print("<-outLight, ");    
+    Serial.print("<-outLight, ");
+  } else if (scrn_ind == SCRN_OUT_OVERFLOW){
+    Serial.print("<-outOverflow, ");  
   } else if (scrn_ind == SCRN_OUT_SONAR){
     Serial.print("<-outSonar, ");    
   }
@@ -56,6 +60,7 @@ void debugLog(const char * string, int data, char *data_string, int scrn_ind)
   }
 
   Serial.print(">");
+
   if (newData == true) {
     replyToEzGUI();
     newData = false;

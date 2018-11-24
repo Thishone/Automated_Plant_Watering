@@ -15,8 +15,8 @@ const int echoPin = 10;
 
 // defines variables
 long duration;
-int sonarDistance = 0;
-int old_sonarDistance = 0;
+
+//int old_sonarDistance = 0;
 
 
 //1. If water level > 10cm, GREEN
@@ -35,12 +35,12 @@ void sonarSetup(void)
   pinMode(echoPin, INPUT); // Sets the echoPin as an Input
 }
 
-int sonar(void)
+sonar_st sonar(void)
 {
-  int retValue = SONAR_NONE;
+  sonar_st retValue = SONAR_NONE;
   int measureDistance = 0;
-
-  //debugLog("Running sonar", NONE_DATA, NULL, SCRN_OUTA);
+  int sonarDistance = 0;
+  
   // Clears the trigPin
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
@@ -85,19 +85,6 @@ int sonar(void)
     debugLog("Sonar Distance (Red): ", sonarDistance, NULL, SCRN_OUT_SONAR);
     retValue = SONAR_OVER_LIMIT_DISTANCE;
   }
-
-//  if (sonarDistance > LIMIT_DISTANCE)
-//  {
-//    retValue = SONAR_OVER_LIMIT_DISTANCE;
-//  } else {
-//    retValue = SONAR_WITHIN_LIMIT_DISTANCE;
-//  }
-  
-  // Prints the sonarDistance on the Serial Monitor
-//  if (old_sonarDistance != sonarDistance){
-//    debugLog("Sonar Distance: ", sonarDistance, NULL, SCRN_OUT_SONAR);
-//    old_sonarDistance = sonarDistance;
-//  }
-    
+      
   return retValue;
 }

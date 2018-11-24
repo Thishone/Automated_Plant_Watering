@@ -18,10 +18,9 @@ unsigned long lastSerial = 0;
 
 #define READ_SENSORS_PERIOD   2000
 
-int snar_status = SONAR_NONE;
-//int pump_status = PUMP_NONE;
+sonar_st snar_status = SONAR_NONE;
 
-int learnTest = 1;
+boolean learnTest = 1;
 
 void sensorsOperation(void);
 
@@ -46,6 +45,7 @@ void loop()
 {
   //ezScrn();
   sensorsOperation();
+  delay(1000);
 }
 
 void sensorsOperation(void)
@@ -69,13 +69,14 @@ void sensorsOperation(void)
       supplyWater();
     }
     
-    //snar_status = sonar();
+    snar_status = sonar();
     
-    //temperature
-    ReadTemperature();
+    //Humidity
+    DHT11_HumiditySensor();
     
     //light
     ReadLight();
+
+    ReadOverflow();
   }
-  //bt_status = bluetooth();
 }

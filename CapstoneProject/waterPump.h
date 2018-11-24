@@ -15,11 +15,12 @@ int waterPumpOff(void);
 int alertWaterIsLow(void);
 
 //Added Water Pump status
-enum waterPump_status {
+typedef  enum{
    PUMP_NONE,
    PUMP_ON,
    PUMP_OFF
-};
+}waterPump_st;
+
 
 #ifdef __cplusplus
 } // extern "C"

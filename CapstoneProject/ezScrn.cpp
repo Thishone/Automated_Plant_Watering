@@ -10,7 +10,7 @@
 #include "debugLog.h"
 #include "sensors.h"
 
-const byte numChars = 50;
+const byte numChars = 30;
 char receivedChars[numChars];
 boolean newData = false;
 
@@ -50,37 +50,40 @@ void ezScrnSetup(void)
 
   Serial.println("<Arduino is ready>");
     // initiate the screen design
-  Serial.println("<+newScrn, size=40x34, tleft=0x0, bg=green, fg=black>");
+  Serial.println("<+newScrn, size=40x44, tleft=0x0, bg=green, fg=black>");
     // add an area for text from the Arduino to be displayed
-  Serial.println("<+tOut, name=outA, size=38x10, tleft=1x1, bg=yellow, fg=black>");
+  Serial.println("<+tOut, name=outA, size=38x14, tleft=1x1, bg=yellow, fg=black>");
   
    // add an area for text from the slidA to be displayed
-  Serial.println("<+tOut, name=outSlidMax, size=16x2, tleft=2x12, bg=yellow, fg=black>");
+  Serial.println("<+tOut, name=outSlidMax, size=16x2, tleft=2x16, bg=yellow, fg=black>");
     // add a slider to control a servo
-  Serial.println("<+slid, name=slidMax, size=15x1, tleft=22x12, range=0x100x0x5>");
+  Serial.println("<+slid, name=slidMax, size=15x1, tleft=22x16, range=0x100x0x5>");
 
    // add an area for text from the slidA to be displayed
-  Serial.println("<+tOut, name=outSlidMin, size=16x2, tleft=2x15, bg=yellow, fg=black>");
+  Serial.println("<+tOut, name=outSlidMin, size=16x2, tleft=2x19, bg=yellow, fg=black>");
     // add a slider to control a servo
-  Serial.println("<+slid, name=slidMin, size=15x1, tleft=22x15, range=0x100x0x5>"); //(min, max, position, step)
+  Serial.println("<+slid, name=slidMin, size=15x1, tleft=22x19, range=0x100x0x5>"); //(min, max, position, step)
 
    // add an area for text from the moisture to be displayed
-  Serial.println("<+tOut, name=outMoisture, size=16x2, tleft=2x20, bg=yellow, fg=black>");
-
-   // add an area for text from the tempture to be displayed
-  Serial.println("<+tOut, name=outTemp, size=16x2, tleft=2x23, bg=yellow, fg=black>");
+  Serial.println("<+tOut, name=outMoisture, size=16x2, tleft=2x24, bg=yellow, fg=black>");
 
    // add an area for text from the Humidity to be displayed
-  Serial.println("<+tOut, name=outHumidity, size=16x2, tleft=2x26, bg=yellow, fg=black>");
-  
+  Serial.println("<+tOut, name=outHumidity, size=16x2, tleft=2x27, bg=yellow, fg=black>");
+
+   // add an area for text from the tempture to be displayed
+  Serial.println("<+tOut, name=outTemp, size=16x2, tleft=2x30, bg=yellow, fg=black>");
+
   // add an area for text from the light to be displayed
-  Serial.println("<+tOut, name=outLight, size=16x2, tleft=2x29, bg=yellow, fg=black>");
+  Serial.println("<+tOut, name=outLight, size=16x2, tleft=2x33, bg=yellow, fg=black>");
 
   // add an area for text from the sonar distace to be displayed
-  Serial.println("<+tOut, name=outSonar, size=24x2, tleft=2x32, bg=yellow, fg=black>");
+  Serial.println("<+tOut, name=outOverflow, size=16x2, tleft=2x36, bg=yellow, fg=black>");
+
+  // add an area for text from the sonar distace to be displayed
+  Serial.println("<+tOut, name=outSonar, size=24x2, tleft=2x39, bg=yellow, fg=black>");
   
     // add a QUIT button
-  Serial.println("<+quit, name=Quit, size=8x2, tleft=30x30, bg=red, fg=black>");
+  Serial.println("<+quit, name=Quit, size=8x2, tleft=30x39, bg=red, fg=black>");
     // terminate the design
     
   Serial.println("<+endScrn>");
@@ -98,7 +101,7 @@ void ezScrnSetup(void)
 // PARAMETERS   :   
 // RETURNS       : none
 /////////////////////////////////////////////////////////////////
-void moveServo() {
+void moveServo(void) {
   if (sliderMaxValue != oldSliderMaxValue) {
     myServo.write(sliderMaxValue);
   }
@@ -107,6 +110,7 @@ void moveServo() {
     myServo.write(sliderMinValue);
   }
 }
+
 
 /////////////////////////////////////////////////////////////////
 // FUNCTION      : replyToEzGUI()

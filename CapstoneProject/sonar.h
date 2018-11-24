@@ -9,15 +9,15 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-void sonarSetup(void);
-int sonar(void);
-
 //Added sonar status
-enum sonar_status {
+typedef enum{
    SONAR_NONE,
    SONAR_WITHIN_LIMIT_DISTANCE,
    SONAR_OVER_LIMIT_DISTANCE
-};
+}sonar_st;
+
+void sonarSetup(void);
+sonar_st sonar(void);
 
 #ifdef __cplusplus
 } // extern "C"

@@ -15,19 +15,16 @@ void setMaxMoistureValue(int max);
 void setMinMoistureValue(int min);
 
 int ReadMoisture(void);
-void WriteMoisture(void);
 void supplyWater(void);
 
 // Temperature Sensor
-extern int ReadTemperatureValue;
 void ReadTemperature(void);
-void WriteTemperature(void);
 void DHT11_HumiditySensor(void);
 
 // Light Sensor 
-extern int ReadLightValue;
 void ReadLight(void);
-void WriteLight(void);
+
+void ReadOverflow(void);
 void learnSupplyWater(void);
 #ifdef __cplusplus
 } // extern "C"

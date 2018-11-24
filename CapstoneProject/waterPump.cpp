@@ -11,7 +11,7 @@
 #include "debugLog.h"
 #include "sonar.h"
 
-extern int snar_status;
+extern sonar_st snar_status;
 
 const int waterPumpPin =  11;// the number of the water pump pin
 
@@ -35,10 +35,10 @@ void waterPumpSetup(void)
 /////////////////////////////////////////////////////////////////
 int waterPumpOn(void)
 {
-  int retValue = PUMP_NONE;
+  waterPump_st retValue = PUMP_NONE;
   if (alertWaterIsLow() == 0){
     digitalWrite(waterPumpPin, HIGH);   // turn the water pump on (HIGH is the voltage level)
-    //debugLog("water Pump On!", NONE_DATA, NULL, SCRN_OUTA);
+    debugLog("water Pump On", NONE_DATA, NULL, SCRN_OUTA);
 #ifdef LED_FEATURE
     ledOn();
 #endif
@@ -57,9 +57,9 @@ int waterPumpOn(void)
 /////////////////////////////////////////////////////////////////
 int waterPumpOff(void)
 {
-  int retValue = PUMP_NONE;
+  waterPump_st retValue = PUMP_NONE;
   digitalWrite(waterPumpPin, LOW);    // turn the water pump off by making the voltage LOW
-  //debugLog("water Pump Off!", NONE_DATA, NULL, SCRN_OUTA);
+  debugLog("water Pump Off", NONE_DATA, NULL, SCRN_OUTA);
 #ifdef LED_FEATURE
   ledOff();
 #endif

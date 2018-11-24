@@ -14,7 +14,8 @@ void ezScrn(void);
 void replyToEzGUI(void);
 
 void recvWithStartEndMarkers(void);
-
+void moveServo(void);
+void moveServoInit(void);
 extern boolean ezScrn_on;
 extern boolean newData;
 

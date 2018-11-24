@@ -14,7 +14,7 @@ extern "C" {
 #define NONE_DATA -100
 
 
-enum scrn_ind {
+typedef enum{
    SCRN_NONE,
    SCRN_OUTA,
    SCRN_OUT_SLID_MAX,
@@ -22,11 +22,12 @@ enum scrn_ind {
    SCRN_OUT_SLID_MIN,
    SCRN_SLID_MIN,
    SCRN_OUT_MOISTURE,
-   SCRN_OUT_TEMPERATURE,
    SCRN_OUT_HUMIDITY,
+   SCRN_OUT_TEMPERATURE,
    SCRN_OUT_LIGHT,
+   SCRN_OUT_OVERFLOW,
    SCRN_OUT_SONAR
-};
+}scrn_ind;
 
 extern void debugLog(const char * string, int data, char * data_string, int scrn_ind);
 
