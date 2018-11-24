@@ -1,23 +1,25 @@
 /*
- * analogInputOutput.cpp
+ * sensors.cpp
  *
  *  Created on: Nov 15, 2018
  *      Author: Jin Taek Lee, Thishone Wijayakumar, Ajo Cherian Thomas
  */
 #include <Arduino.h>
-#include "analogInputOutput.h"
+#include "dht.h"
+#include "sensors.h"
 #include "waterPump.h"
 #include "blinkLed.h"
 #include "sonar.h"
 #include "debugLog.h"
 #include "ezScrn.h"
 
-extern int snar_status;
 extern boolean newData;
 
 extern int learnTest;
 
-//#define PERCENT 37  //ASCII code number "%"
+dht DHT;
+
+#define DHT11_PIN 7
 
 // Data of Soil Moisture Sensor
 //input voltages between 0 and 5 volts into integer values between 0 and 1023
@@ -39,36 +41,52 @@ int soilMoistureRawVal = 0;
 float soilMoisturePercentage = 0;
 float old_soilMoisturePercentage = 100;
 
+// Data of Moisture Sensor 
 const int ReadMoisturePin = 0;     // connected to analog pin 0
-                                   // outside leads to ground and +5V
 const int WriteMoisturePin = 8; 
-int ReadMoistureValue = 0;   // variable to store the value read
 
 // Data of Temperature Sensor 
 const int ReadTemperaturePin = 1;     // connected to analog pin 1
-
 const int WriteTemperaturePin = 9; 
-int ReadTemperatureValue = 0;   // variable to store the value read
-int old_ReadTemperatureValue = 0;
 
 // Data of Light Sensor 
 const int ReadLightPin = 2;     // connected to analog pin 1
-
 const int WriteLightPin = 10; 
+
+int ReadMoistureValue = 0;   // variable to store the value read
+
+int ReadTemperatureValue = 0;   // variable to store the value read
+int old_ReadTemperatureValue = 0;
+
 int ReadLightValue = 0;   // variable to store the value read
 int old_ReadLightValue = 100;
 
 int waterPumpTime=0;
 
+
+
+/////////////////////////////////////////////////////////////////
+// FUNCTION      : setMaxMoistureValue()
+// DESCRIPTION   : 
+// PARAMETERS   :   
+// RETURNS       : none
+/////////////////////////////////////////////////////////////////
 void setMaxMoistureValue(int max)
 {
   max_moisture = max;
 }
 
+/////////////////////////////////////////////////////////////////
+// FUNCTION      : ReadMsetMinMoistureValueoisture()
+// DESCRIPTION   : 
+// PARAMETERS   :   
+// RETURNS       : none
+/////////////////////////////////////////////////////////////////
 void setMinMoistureValue(int min)
 {
   min_moisture = min;
 }
+
 /////////////////////////////////////////////////////////////////
 // FUNCTION      : ReadMoisture()
 // DESCRIPTION   : This function reads the value of soil Moisture
@@ -87,26 +105,12 @@ int ReadMoisture(void)
   {
     soilMoisturePercentage = ((float)soilMoistureRawVal / MAX_MOISTURE_VALUE)*100.0;
 
-    debugLog("Soil Moisture: ", soilMoisturePercentage, NULL, SCRN_OUT_MOISTURE);
+    debugLog("Soil Moisture(%): ", soilMoisturePercentage, NULL, SCRN_OUT_MOISTURE);
   }
 
   return retValue;
 }
-/////////////////////////////////////////////////////////////////
-// FUNCTION      : alertWaterIsLow()
-// DESCRIPTION   : This function alert the tank water is low
-// PARAMETERS   :   
-// RETURNS       : none
-/////////////////////////////////////////////////////////////////
-int alertWaterIsLow(void)
-{
-  int retValue = 0;
-  if (snar_status == SONAR_OVER_LIMIT_DISTANCE){
-    debugLog("Turn off Water Pump because the tank water is low!!!", NONE_DATA, NULL, SCRN_OUTA);
-    retValue = 1;
-  }
-  return retValue;
-}
+
 /////////////////////////////////////////////////////////////////
 // FUNCTION      : learnSupplyWater()
 // DESCRIPTION   : This function supplys Water
@@ -202,6 +206,16 @@ void ReadTemperature(void)
 //  delay(500);
 }
 
+void DHT11_HumiditySensor(void)
+{
+  int chk = DHT.read11(DHT11_PIN);
+//  Serial.print("Temperature = ");
+//  Serial.println(DHT.temperature);
+  debugLog("Temperature(°C): ", DHT.temperature, NULL, SCRN_OUT_TEMPERATURE);
+  debugLog("humidity(%): ", DHT.humidity, NULL, SCRN_OUT_HUMIDITY);
+
+  delay(1000);
+}
 /////////////////////////////////////////////////////////////////
 // FUNCTION      : WriteTemperature()
 // DESCRIPTION   : This function writes the value of temperature

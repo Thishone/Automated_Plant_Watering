@@ -8,9 +8,9 @@
 #include <Servo.h>
 #include "ezScrn.h"
 #include "debugLog.h"
-#include "analogInputOutput.h"
+#include "sensors.h"
 
-const byte numChars = 90;
+const byte numChars = 50;
 char receivedChars[numChars];
 boolean newData = false;
 
@@ -36,16 +36,16 @@ byte ledState = 0;
 void ezScrnSetup(void) 
 {
   // wait for python to send <Python ready>
-	boolean startReceived = false;
-	while (startReceived == false) {
-		newData = false;
-		recvWithStartEndMarkers();
-		if (newData == true) {
-			if (strcmp(receivedChars, "Python ready") == 0) {
-				startReceived = true;
-			}
-		}
-	}
+  boolean startReceived = false;
+  while (startReceived == false) {
+    newData = false;
+    recvWithStartEndMarkers();
+    if (newData == true) {
+      if (strcmp(receivedChars, "Python ready") == 0) {
+        startReceived = true;
+      }
+    }
+  }
 		// send acknowledgment
 
   Serial.println("<Arduino is ready>");
@@ -70,11 +70,14 @@ void ezScrnSetup(void)
    // add an area for text from the tempture to be displayed
   Serial.println("<+tOut, name=outTemp, size=16x2, tleft=2x23, bg=yellow, fg=black>");
 
+   // add an area for text from the Humidity to be displayed
+  Serial.println("<+tOut, name=outHumidity, size=16x2, tleft=2x26, bg=yellow, fg=black>");
+  
   // add an area for text from the light to be displayed
-  Serial.println("<+tOut, name=outLight, size=16x2, tleft=2x26, bg=yellow, fg=black>");
+  Serial.println("<+tOut, name=outLight, size=16x2, tleft=2x29, bg=yellow, fg=black>");
 
   // add an area for text from the sonar distace to be displayed
-  Serial.println("<+tOut, name=outSonar, size=24x2, tleft=2x29, bg=yellow, fg=black>");
+  Serial.println("<+tOut, name=outSonar, size=24x2, tleft=2x32, bg=yellow, fg=black>");
   
     // add a QUIT button
   Serial.println("<+quit, name=Quit, size=8x2, tleft=30x30, bg=red, fg=black>");
@@ -134,7 +137,8 @@ void replyToEzGUI(void)
 // PARAMETERS   :   
 // RETURNS       : none
 /////////////////////////////////////////////////////////////////
-void recvWithStartEndMarkers() {
+void recvWithStartEndMarkers() 
+{
   static boolean recvInProgress = false;
   static byte ndx = 0;
   char startMarker = '<';
@@ -144,7 +148,7 @@ void recvWithStartEndMarkers() {
   if (Serial.available() > 0) {
     while (Serial.available() > 0 && newData == false) { 
       rc = Serial.read();
-
+      
       if (recvInProgress == true) {
         if (rc != endMarker) {
           receivedChars[ndx] = rc;

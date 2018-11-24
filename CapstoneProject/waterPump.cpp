@@ -7,8 +7,11 @@
 #include <Arduino.h>
 #include "waterPump.h"
 #include "blinkLed.h"
-#include "analogInputOutput.h"
+#include "sensors.h"
 #include "debugLog.h"
+#include "sonar.h"
+
+extern int snar_status;
 
 const int waterPumpPin =  11;// the number of the water pump pin
 
@@ -61,5 +64,21 @@ int waterPumpOff(void)
   ledOff();
 #endif
   retValue = PUMP_OFF;
+  return retValue;
+}
+
+/////////////////////////////////////////////////////////////////
+// FUNCTION      : alertWaterIsLow()
+// DESCRIPTION   : This function alert the tank water is low
+// PARAMETERS   :   
+// RETURNS       : none
+/////////////////////////////////////////////////////////////////
+int alertWaterIsLow(void)
+{
+  int retValue = 0;
+  if (snar_status == SONAR_OVER_LIMIT_DISTANCE){
+    debugLog("Turn off Water Pump because the tank water is low!!!", NONE_DATA, NULL, SCRN_OUTA);
+    retValue = 1;
+  }
   return retValue;
 }

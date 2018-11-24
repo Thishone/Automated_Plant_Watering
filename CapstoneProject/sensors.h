@@ -1,5 +1,5 @@
 /*
- * analogInputOutput.h
+ * sensors.h
  *
  *  Created on: Nov 15, 2018
  *      Author: Jin Taek Lee, Thishone Wijayakumar, Ajo Cherian Thomas
@@ -17,12 +17,12 @@ void setMinMoistureValue(int min);
 int ReadMoisture(void);
 void WriteMoisture(void);
 void supplyWater(void);
-int alertWaterIsLow(void);
 
 // Temperature Sensor
 extern int ReadTemperatureValue;
 void ReadTemperature(void);
 void WriteTemperature(void);
+void DHT11_HumiditySensor(void);
 
 // Light Sensor 
 extern int ReadLightValue;

@@ -11,7 +11,7 @@
 #include "blinkLed.h"
 #include "bluetooth.h"
 #include "waterPump.h"
-#include "analogInputOutput.h"
+#include "sensors.h"
 #include "debugLog.h"
 #include "ezScrn.h"
 

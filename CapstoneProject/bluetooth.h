@@ -9,6 +9,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 #ifdef BLUETOOTH_FEATU
 int bluetooth(void);
 void bluetoothSerial(void);
@@ -23,6 +24,7 @@ enum bt_status {
    BT_UNAVAILABLE = 0x08,
 };
 #endif
+
 #ifdef __cplusplus
 } // extern "C"
 #endif

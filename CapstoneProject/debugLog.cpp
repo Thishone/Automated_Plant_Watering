@@ -8,11 +8,6 @@
 #include "debugLog.h"
 #include "ezScrn.h"
 
-//#define LOG_DATA_SIZE 20
-//char string_log[LOG_DATA_SIZE] = {0,};
-//int data_log = 0;
-//char data_string_log[10] = {0,};
-
 /////////////////////////////////////////////////////////////////
 // FUNCTION      : debugLog()
 // DESCRIPTION   : This function use for debug
@@ -39,7 +34,9 @@ void debugLog(const char * string, int data, char *data_string, int scrn_ind)
   } else if (scrn_ind == SCRN_OUT_MOISTURE){
     Serial.print("<-outMoisture, ");    
   } else if (scrn_ind == SCRN_OUT_TEMPERATURE){
-    Serial.print("<-outTemp, ");    
+    Serial.print("<-outTemp, ");
+  } else if (scrn_ind == SCRN_OUT_HUMIDITY){
+    Serial.print("<-outHumidity, ");
   } else if (scrn_ind == SCRN_OUT_LIGHT){
     Serial.print("<-outLight, ");    
   } else if (scrn_ind == SCRN_OUT_SONAR){
@@ -64,9 +61,6 @@ void debugLog(const char * string, int data, char *data_string, int scrn_ind)
     newData = false;
   }  
 
-//  strcpy(string_log, string);
-//  data_log = data;
-//  strcpy(data_string_log, data_string);
 #endif
 
 }

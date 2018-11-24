@@ -6,7 +6,7 @@
  */
 #include <Arduino.h>
 #include "blinkLed.h"
-#include "analogInputOutput.h"
+#include "sensors.h"
 #include "waterPump.h"
 #include "bluetooth.h"
 #include "sonar.h"
@@ -19,7 +19,7 @@ unsigned long lastSerial = 0;
 #define READ_SENSORS_PERIOD   2000
 
 int snar_status = SONAR_NONE;
-int pump_status = PUMP_NONE;
+//int pump_status = PUMP_NONE;
 
 int learnTest = 1;
 
@@ -61,7 +61,7 @@ void sensorsOperation(void)
     ezScrn();
     
     //soil Moisture
-    pump_status = ReadMoisture();
+    ReadMoisture();
     
     if (learnTest == 1){
       learnSupplyWater();

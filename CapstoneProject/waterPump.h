@@ -12,6 +12,7 @@ extern "C" {
 void waterPumpSetup(void);
 int waterPumpOn(void);
 int waterPumpOff(void);
+int alertWaterIsLow(void);
 
 //Added Water Pump status
 enum waterPump_status {

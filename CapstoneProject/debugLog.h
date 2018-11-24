@@ -13,10 +13,6 @@ extern "C" {
 #define DEBUG_LOG
 #define NONE_DATA -100
 
-//enum debug_mode {
-//   DEBUG_DEV,
-//   DEBUG_RELEASE,
-//};
 
 enum scrn_ind {
    SCRN_NONE,
@@ -27,6 +23,7 @@ enum scrn_ind {
    SCRN_SLID_MIN,
    SCRN_OUT_MOISTURE,
    SCRN_OUT_TEMPERATURE,
+   SCRN_OUT_HUMIDITY,
    SCRN_OUT_LIGHT,
    SCRN_OUT_SONAR
 };
