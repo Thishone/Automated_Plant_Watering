@@ -26,6 +26,8 @@ void ReadLight(void);
 
 void ReadOverflow(void);
 void learnSupplyWater(void);
+
+void initVariabls(void);
 #ifdef __cplusplus
 } // extern "C"
 #endif

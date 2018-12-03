@@ -13,7 +13,7 @@
 
 extern sonar_st snar_status;
 
-const int waterPumpPin =  11;// the number of the water pump pin
+const int waterPumpPin =  12;// the number of the water pump pin
 
 /////////////////////////////////////////////////////////////////
 // FUNCTION      : waterPumpSetup()
@@ -25,6 +25,7 @@ void waterPumpSetup(void)
 {
   // initialize digital pin waterPump as an output.
   pinMode(waterPumpPin, OUTPUT);
+  digitalWrite(waterPumpPin, HIGH);
 }
 
 /////////////////////////////////////////////////////////////////
@@ -37,7 +38,8 @@ int waterPumpOn(void)
 {
   waterPump_st retValue = PUMP_NONE;
   if (alertWaterIsLow() == 0){
-    digitalWrite(waterPumpPin, HIGH);   // turn the water pump on (HIGH is the voltage level)
+    //digitalWrite(waterPumpPin, HIGH);   // turn the water pump on (HIGH is the voltage level)
+    digitalWrite(waterPumpPin, LOW);   // turn the water pump on (HIGH is the voltage level)
     debugLog("water Pump On", NONE_DATA, NULL, SCRN_OUTA);
 #ifdef LED_FEATURE
     ledOn();
@@ -58,7 +60,8 @@ int waterPumpOn(void)
 int waterPumpOff(void)
 {
   waterPump_st retValue = PUMP_NONE;
-  digitalWrite(waterPumpPin, LOW);    // turn the water pump off by making the voltage LOW
+  //digitalWrite(waterPumpPin, LOW);    // turn the water pump off by making the voltage LOW
+  digitalWrite(waterPumpPin, HIGH);    // turn the water pump off by making the voltage LOW
   //debugLog("water Pump Off", NONE_DATA, NULL, SCRN_OUTA);
 #ifdef LED_FEATURE
   ledOff();
@@ -73,12 +76,12 @@ int waterPumpOff(void)
 // PARAMETERS   :   
 // RETURNS       : none
 /////////////////////////////////////////////////////////////////
-int alertWaterIsLow(void)
+boolean alertWaterIsLow(void)
 {
-  int retValue = 0;
+  boolean retValue = false;
   if (snar_status == SONAR_OVER_LIMIT_DISTANCE){
     debugLog("Turn off Water Pump because the tank water is low!!!", NONE_DATA, NULL, SCRN_OUTA);
-    retValue = 1;
+    retValue = true;
   }
   return retValue;
 }

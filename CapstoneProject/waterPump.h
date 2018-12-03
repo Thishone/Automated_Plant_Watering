@@ -12,7 +12,7 @@ extern "C" {
 void waterPumpSetup(void);
 int waterPumpOn(void);
 int waterPumpOff(void);
-int alertWaterIsLow(void);
+boolean alertWaterIsLow(void);
 
 //Added Water Pump status
 typedef  enum{

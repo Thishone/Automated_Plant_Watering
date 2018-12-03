@@ -24,9 +24,9 @@ long duration;
 //3. If water level < 5cm, RED and send message to refill water. Do not pump water if below 5cm.
 
 //#define LIMIT_DISTANCE       15
-#define FULL_WATER_LEVEL     20
-#define HIGH_WATER_LEVEL     10
-#define LOW_WATER_LEVEL      5
+#define FULL_WATER_LEVEL     13//20
+#define HIGH_WATER_LEVEL     9//10
+#define LOW_WATER_LEVEL      3//5
 #define SPEED_SOUND 0.034
 
 /////////////////////////////////////////////////////////////////
@@ -71,30 +71,15 @@ sonar_st sonar(void)
   measureDistance = FULL_WATER_LEVEL - sonarDistance;
   if (measureDistance > HIGH_WATER_LEVEL){
     // GREEN
-#ifdef LED_FEATURE
-    blinkYellowOff();
-    blinkRedOff();
-    blinkGreenOn();
-#endif
-    debugLog("Sonar Distance (Green): ", sonarDistance, NULL, SCRN_OUT_SONAR);
+    debugLog("Sonar Distance(cm: Green): ", sonarDistance, NULL, SCRN_OUT_SONAR);
     retValue = SONAR_WITHIN_LIMIT_DISTANCE;
   } else if ((HIGH_WATER_LEVEL >= measureDistance) && (measureDistance > LOW_WATER_LEVEL))  {
     // YELLOW
-#ifdef LED_FEATURE
-    blinkGreenOff();
-    blinkRedOff();
-    blinkYellowOn();
-#endif
-    debugLog("Sonar Distance (Yellow): ", sonarDistance, NULL, SCRN_OUT_SONAR);
+    debugLog("Sonar Distance(cm: Yellow): ", sonarDistance, NULL, SCRN_OUT_SONAR);
     retValue = SONAR_WITHIN_LIMIT_DISTANCE;
   } else if (measureDistance <= LOW_WATER_LEVEL) {
     // Red
-#ifdef LED_FEATURE
-    blinkGreenOff();
-    blinkYellowOff();
-    blinkRedOn();
-#endif
-    debugLog("Sonar Distance (Red): ", sonarDistance, NULL, SCRN_OUT_SONAR);
+    debugLog("Sonar Distance(cm: Red): ", sonarDistance, NULL, SCRN_OUT_SONAR);
     retValue = SONAR_OVER_LIMIT_DISTANCE;
   }
       

@@ -69,9 +69,14 @@ void sensorsOperation(void)
     
     if (regularWatering == true) {
       supplyWater();
+    } else {
+      initVariabls();
     }
     
     snar_status = sonar();
+    if (snar_status == SONAR_OVER_LIMIT_DISTANCE){
+      initVariabls();
+    }
     
     //Humidity
     DHT11_HumiditySensor();
@@ -81,6 +86,11 @@ void sensorsOperation(void)
 
     if (learningPotSize == false){
       ReadOverflow();
+    }
+
+    if (alertWaterIsLow() == true){
+      initVariabls();
+      waterPumpOff();
     }
   }
 }

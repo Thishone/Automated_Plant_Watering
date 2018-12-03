@@ -36,16 +36,6 @@ dht DHT;
 #define ONE_SECOND 1000
 #define TREE_SECONDS 3000
 
-#define SOIL_MOISTURE_STR "Soil Moisture(%): "
-#define WAIT_FOR_SECOND_STR "wait second: "
-#define WATER_PUMP_TIME_STR "watering Pump Time "
-#define TEMPERATURE_STR "Temperature(°C): "
-#define HUMIDITY_STR "Humidity(%): "
-#define LIGHT_STR "Light Value: "
-#define OVERFLOW_STR "Overflow(%): "
-#define WATER_PUMP_ON_STR "water Pump ON "
-#define WATER_PUMP_OFF_STR "water Pump OFF "
-
 //read the setted value from bluetooth by user
 unsigned int max_moisture = 0;
 unsigned int min_moisture = 0;
@@ -63,13 +53,19 @@ const int ReadMoisturePin = 0;     // connected to analog pin 0
 
 // Data of Light Sensor 
 const int ReadLightPin = 2;     // connected to analog pin 1
-const int WriteLightPin = 10; 
+#define SUN_LIGHT  850
+#define LOW_LIGHT 400
+
 
 // Data of Overflow Sensor 
 const int ReadOverflowPin = 3;     // connected to analog pin 0
 
 int wateringTime=0;
-
+int waitWateringTime = 10;
+int wait1MinuteAfterWatering = 0;
+boolean underMin = false;
+boolean overMax = false;
+boolean PumpOn = false;
 /////////////////////////////////////////////////////////////////
 // FUNCTION      : setMaxMoistureValue()
 // DESCRIPTION   : 
@@ -111,7 +107,7 @@ int ReadMoisture(void)
   if (soilMoistureRawVal < MAX_MOISTURE_VALUE)
   {
     soilMoisturePercentage = ((float)soilMoistureRawVal / MAX_MOISTURE_VALUE)*100.0;
-    debugLog(SOIL_MOISTURE_STR, soilMoisturePercentage, NULL, SCRN_OUT_MOISTURE);
+    debugLog("Soil Moisture(%): ", soilMoisturePercentage, NULL, SCRN_OUT_MOISTURE);
   }
 
   return retValue;
@@ -127,8 +123,9 @@ void learnSupplyWater(void)
 {
   static int waitSecondAfterPump = 0;
   static int measurePotSize = 0;
-  debugLog("soilMoisturePercentage ", soilMoisturePercentage, NULL, SCRN_OUTA);
-  debugLog("old_soilMoisturePercentage ", old_soilMoisturePercentage, NULL, SCRN_OUTA);
+  int disp_wateringTime = 0;
+  //debugLog("soilMoisturePercentage ", soilMoisturePercentage, NULL, SCRN_OUTA);
+  //debugLog("old_soilMoisturePercentage ", old_soilMoisturePercentage, NULL, SCRN_OUTA);
   if ((soilMoisturePercentage - old_soilMoisturePercentage <= 10))
   {  
     if (waitSecondAfterPump == 0)
@@ -136,7 +133,7 @@ void learnSupplyWater(void)
       debugLog("Learn supplyWater ", NONE_DATA, NULL, SCRN_OUTA);
       waterPumpOn();
       delay(TREE_SECONDS);
-      //debugLog(WAIT_FOR_SECOND_STR, TREE_SECONDS, NULL, SCRN_OUTA);
+      debugLog("wait second: ", TREE_SECONDS, NULL, SCRN_OUTA);
       waterPumpOff();
       waitSecondAfterPump = ONE_MINUTE;
     
@@ -150,8 +147,9 @@ void learnSupplyWater(void)
     }
   } else {
     wateringTime = measurePotSize * TREE_SECONDS;
+    disp_wateringTime = wateringTime /1000;
     learningPotSize = false;
-    debugLog(WATER_PUMP_TIME_STR, wateringTime, NULL, SCRN_OUT_WATERING_TIME);
+    debugLog("Watering Pump Time: ", disp_wateringTime, NULL, SCRN_OUT_WATERING_TIME);
   }
 }
 
@@ -163,11 +161,13 @@ void learnSupplyWater(void)
 /////////////////////////////////////////////////////////////////
 void supplyWater(void)
 {
-  static int waitWateringTime = 10;
-  static boolean underMin = false;
-  static boolean overMax = false;
-  static boolean PumpOn = false;
-  static int wait1MinuteAfterWatering = 0;
+//  static int waitWateringTime = 10;
+//  static int wait1MinuteAfterWatering = 0;
+  
+//  static boolean underMin = false;
+//  static boolean overMax = false;
+//  static boolean PumpOn = false;
+
 
   if (wait1MinuteAfterWatering == 0){
     if ((soilMoisturePercentage <= min_moisture) && (underMin == false)){
@@ -193,14 +193,14 @@ void supplyWater(void)
       
       if (waitWateringTime == 0)
       {
-        //debugLog("pump off & second 0 ", NONE_DATA, NULL, SCRN_OUTA);      
+        debugLog("pump off & second 0 ", NONE_DATA, NULL, SCRN_OUTA);      
         waterPumpOff();
         PumpOn = false;
         wait1MinuteAfterWatering = ONE_MINUTE;
         //underMin = false;
       } else {
         waitWateringTime --;
-        debugLog("Regular Wait for seconds: ", waitWateringTime, NULL, SCRN_OUTA);
+        debugLog("Watering Wait for seconds: ", waitWateringTime, NULL, SCRN_OUTA);
         if (overMax == true){
           waitWateringTime = 0;
         }
@@ -213,6 +213,22 @@ void supplyWater(void)
 }
 
 /////////////////////////////////////////////////////////////////
+// FUNCTION      : clearTime()
+// DESCRIPTION   : This function supplys clearTime
+// PARAMETERS   :   
+// RETURNS       : none
+/////////////////////////////////////////////////////////////////
+void initVariabls(void)
+{
+  //debugLog("Init Variabls ", NONE_DATA, NULL, SCRN_OUTA);
+  regularWatering = false;
+  waitWateringTime = 0;
+  wait1MinuteAfterWatering = 0;
+  underMin = false;
+  overMax = false;
+  PumpOn = false;
+}
+/////////////////////////////////////////////////////////////////
 // FUNCTION      : DHT11_HumiditySensor()
 // DESCRIPTION   : This function reads the value of Humidity
 // PARAMETERS   :   
@@ -222,8 +238,8 @@ void DHT11_HumiditySensor(void)
 {
   int ReadHumidityValue = DHT.read11(DHT11_PIN);
 
-  debugLog(TEMPERATURE_STR, DHT.temperature, NULL, SCRN_OUT_TEMPERATURE);
-  debugLog(HUMIDITY_STR, DHT.humidity, NULL, SCRN_OUT_HUMIDITY);
+  debugLog("Temperature(°C): ", DHT.temperature, NULL, SCRN_OUT_TEMPERATURE);
+  debugLog("Humidity(%): ", DHT.humidity, NULL, SCRN_OUT_HUMIDITY);
 }
 
 /////////////////////////////////////////////////////////////////
@@ -237,7 +253,14 @@ void ReadLight(void)
   int ReadLightValue = 0;
   ReadLightValue = analogRead(ReadLightPin);     // read the input pin
 
-  debugLog(LIGHT_STR, ReadLightValue, NULL, SCRN_OUT_LIGHT);
+  if (ReadLightValue >= SUN_LIGHT){
+    debugLog("Sun light: ", ReadLightValue, NULL, SCRN_OUT_LIGHT);
+  } else if ((ReadLightValue < SUN_LIGHT)&& (ReadLightValue >= LOW_LIGHT)){
+    debugLog("Indoor light: ", ReadLightValue, NULL, SCRN_OUT_LIGHT);
+  } else if (ReadLightValue < LOW_LIGHT){
+    debugLog("Low light: ", ReadLightValue, NULL, SCRN_OUT_LIGHT);
+  }
+    
 }
 
 
@@ -261,11 +284,12 @@ void ReadOverflow(void)
   {
     soilOverflowPercentage = ((float)soilOverflowRawVal / MAX_OVERFLOW_VALUE)*100.0;
 
-    if (soilOverflowPercentage > 15){
-      debugLog("Overflow Pump Stop ", soilOverflowPercentage, NULL, SCRN_OUT_OVERFLOW);
+    if (soilOverflowPercentage >= 15){
+      debugLog("Overflow Pump Stop(%): ", soilOverflowPercentage, NULL, SCRN_OUT_OVERFLOW);
       waterPumpOff();
+      initVariabls();
     } else {
-      debugLog(OVERFLOW_STR, soilOverflowPercentage, NULL, SCRN_OUT_OVERFLOW);
+      debugLog("Dry wet(%): ", soilOverflowPercentage, NULL, SCRN_OUT_OVERFLOW);
     }
   }
 }

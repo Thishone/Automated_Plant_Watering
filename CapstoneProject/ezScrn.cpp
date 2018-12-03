@@ -76,13 +76,13 @@ void ezScrnSetup(void)
   Serial.println(F("<+tOut, name=outMoisture, size=16x2, tleft=2x24, bg=yellow, fg=black>"));
 
     // add a button that will operate an Learning
-  Serial.println(F("<+btn, name=learning, size=11x2, tleft=24x24, bg=black, fg=orange>"));
+  Serial.println(F("<+btn, name=Learning, size=11x2, tleft=24x24, bg=black, fg=orange>"));
 
    // add an area for text from the Watering Time to be displayed
   Serial.println(F("<+tOut, name=outWateringTime, size=16x2, tleft=22x27, bg=yellow, fg=black>"));
 
     // add a button that will operate an Learning
-  Serial.println(F("<+btn, name=regular, size=11x2, tleft=24x30, bg=black, fg=orange>"));
+  Serial.println(F("<+btn, name=Normal, size=11x2, tleft=24x30, bg=black, fg=orange>"));
 
    // add an area for text from the Humidity to be displayed
   Serial.println(F("<+tOut, name=outHumidity, size=16x2, tleft=2x27, bg=yellow, fg=black>"));
@@ -94,7 +94,7 @@ void ezScrnSetup(void)
   Serial.println(F("<+tOut, name=outLight, size=16x2, tleft=2x33, bg=yellow, fg=black>"));
 
   // add an area for text from the sonar distace to be displayed
-  Serial.println(F("<+tOut, name=outOverflow, size=16x2, tleft=2x36, bg=yellow, fg=black>"));
+  Serial.println(F("<+tOut, name=outOverflow, size=24x2, tleft=2x36, bg=yellow, fg=black>"));
 
   // add an area for text from the sonar distace to be displayed
   Serial.println(F("<+tOut, name=outSonar, size=24x2, tleft=2x39, bg=yellow, fg=black>"));
@@ -118,9 +118,9 @@ void ezScrnSetup(void)
 // RETURNS       : none
 /////////////////////////////////////////////////////////////////
 void updateButton() {
-  if (strcmp(buttonValue, "learning") == 0) {
+  if (strcmp(buttonValue, "Learning") == 0) {
     learningPotSize = !learningPotSize;
-  } else if (strcmp(buttonValue, "regular") == 0){
+  } else if (strcmp(buttonValue, "Normal") == 0){
     regularWatering =!regularWatering;
   }
 }
