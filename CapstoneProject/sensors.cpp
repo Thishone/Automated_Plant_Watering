@@ -15,8 +15,10 @@
 
 extern boolean newData;
 extern boolean learningPotSize;
-extern boolean regularWatering;
-
+extern boolean normalWatering;
+#ifdef TEST_CODE
+boolean testError = false;
+#endif
 dht DHT;
 
 // Data of Soil Moisture Sensor
@@ -124,8 +126,8 @@ void learnSupplyWater(void)
   static int waitSecondAfterPump = 0;
   static int measurePotSize = 0;
   int disp_wateringTime = 0;
-  //debugLog("soilMoisturePercentage ", soilMoisturePercentage, NULL, SCRN_OUTA);
-  //debugLog("old_soilMoisturePercentage ", old_soilMoisturePercentage, NULL, SCRN_OUTA);
+//  debugLog("soilMoisturePercentage ", soilMoisturePercentage, NULL, SCRN_OUTA);
+//  debugLog("old_soilMoisturePercentage ", old_soilMoisturePercentage, NULL, SCRN_OUTA);
   if ((soilMoisturePercentage - old_soilMoisturePercentage <= 10))
   {  
     if (waitSecondAfterPump == 0)
@@ -161,14 +163,6 @@ void learnSupplyWater(void)
 /////////////////////////////////////////////////////////////////
 void supplyWater(void)
 {
-//  static int waitWateringTime = 10;
-//  static int wait1MinuteAfterWatering = 0;
-  
-//  static boolean underMin = false;
-//  static boolean overMax = false;
-//  static boolean PumpOn = false;
-
-
   if (wait1MinuteAfterWatering == 0){
     if ((soilMoisturePercentage <= min_moisture) && (underMin == false)){
       underMin = true;
@@ -176,9 +170,10 @@ void supplyWater(void)
     } else if (soilMoisturePercentage >= max_moisture){
       debugLog("Over Max ", NONE_DATA, NULL, SCRN_OUTA);
       waterPumpOff();
-      overMax = true;
-      underMin = false;
-      waitWateringTime = 0;
+//      overMax = true;
+//      underMin = false;
+//      waitWateringTime = 0;
+      initVariabls();
     }
       
     if (underMin == true)
@@ -221,7 +216,7 @@ void supplyWater(void)
 void initVariabls(void)
 {
   //debugLog("Init Variabls ", NONE_DATA, NULL, SCRN_OUTA);
-  regularWatering = false;
+  normalWatering = false;
   waitWateringTime = 0;
   wait1MinuteAfterWatering = 0;
   underMin = false;
@@ -283,7 +278,12 @@ void ReadOverflow(void)
   if (soilOverflowRawVal < MAX_OVERFLOW_VALUE)
   {
     soilOverflowPercentage = ((float)soilOverflowRawVal / MAX_OVERFLOW_VALUE)*100.0;
-
+#ifdef TEST_CODE
+    soilOverflowPercentage = 10;
+//    if (testError == true){
+//      soilOverflowPercentage = 20;
+//    }
+#endif
     if (soilOverflowPercentage >= 15){
       debugLog("Overflow Pump Stop(%): ", soilOverflowPercentage, NULL, SCRN_OUT_OVERFLOW);
       waterPumpOff();

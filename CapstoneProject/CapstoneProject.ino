@@ -21,7 +21,7 @@ unsigned long lastSerial = 0;
 sonar_st snar_status = SONAR_NONE;
 
 boolean learningPotSize = false;
-boolean regularWatering = false;
+boolean normalWatering = false;
 
 void sensorsOperation(void);
 
@@ -41,13 +41,25 @@ void setup()
   sonarSetup();
 }
 
-// the loop function runs over and over again forever
+
+/////////////////////////////////////////////////////////////////
+// FUNCTION      : loop()
+// DESCRIPTION   : the loop function runs over and over again forever
+// PARAMETERS   :   
+// RETURNS       : none
+/////////////////////////////////////////////////////////////////
 void loop() 
 {
   sensorsOperation();
-  delay(1000);
+  //delay(1000);
 }
 
+/////////////////////////////////////////////////////////////////
+// FUNCTION      : sensorsOperation()
+// DESCRIPTION   : 
+// PARAMETERS   :   
+// RETURNS       : none
+/////////////////////////////////////////////////////////////////
 void sensorsOperation(void)
 {
   #ifdef BLUETOOTH_FEATURE
@@ -65,17 +77,17 @@ void sensorsOperation(void)
     
     if (learningPotSize == true){
       learnSupplyWater();
-    } 
-    
-    if (regularWatering == true) {
-      supplyWater();
     } else {
-      initVariabls();
+      if (normalWatering == true) {
+        supplyWater();
+      }       
     }
     
+
     snar_status = sonar();
     if (snar_status == SONAR_OVER_LIMIT_DISTANCE){
       initVariabls();
+      waterPumpOff();
     }
     
     //Humidity

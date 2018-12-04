@@ -10,6 +10,8 @@
 extern "C" {
 #endif
 
+//#define TEST_CODE  //for testing
+
 // Soil Moisture Sensor
 void setMaxMoistureValue(int max);
 void setMinMoistureValue(int min);

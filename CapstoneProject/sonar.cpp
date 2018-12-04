@@ -8,6 +8,11 @@
 #include "sonar.h"
 #include "debugLog.h"
 #include "blinkLed.h"
+#include "sensors.h"
+
+#ifdef TEST_CODE
+extern boolean testError;
+#endif
 
 // defines pins numbers
 const int trigPin = 9;
@@ -69,17 +74,26 @@ sonar_st sonar(void)
   sonarDistance = duration*SPEED_SOUND/2;
 
   measureDistance = FULL_WATER_LEVEL - sonarDistance;
+#ifdef TEST_CODE
+  measureDistance = 10;
+  if (testError == true){
+    measureDistance = 2;
+  }
+#endif
   if (measureDistance > HIGH_WATER_LEVEL){
     // GREEN
-    debugLog("Sonar Distance(cm: Green): ", sonarDistance, NULL, SCRN_OUT_SONAR);
+    //debugLog("Sonar Distance(cm: Green): ", sonarDistance, NULL, SCRN_OUT_SONAR);
+    debugLog("Water Tank(cm: Green): ", measureDistance, NULL, SCRN_OUT_SONAR);
     retValue = SONAR_WITHIN_LIMIT_DISTANCE;
   } else if ((HIGH_WATER_LEVEL >= measureDistance) && (measureDistance > LOW_WATER_LEVEL))  {
     // YELLOW
-    debugLog("Sonar Distance(cm: Yellow): ", sonarDistance, NULL, SCRN_OUT_SONAR);
+    //debugLog("Sonar Distance(cm: Yellow): ", sonarDistance, NULL, SCRN_OUT_SONAR);
+    debugLog("Water Tank(cm: Yellow): ", measureDistance, NULL, SCRN_OUT_SONAR);
     retValue = SONAR_WITHIN_LIMIT_DISTANCE;
   } else if (measureDistance <= LOW_WATER_LEVEL) {
     // Red
-    debugLog("Sonar Distance(cm: Red): ", sonarDistance, NULL, SCRN_OUT_SONAR);
+    //debugLog("Sonar Distance(cm: Red): ", sonarDistance, NULL, SCRN_OUT_SONAR);
+    debugLog("Water Tank(cm: Red): ", measureDistance, NULL, SCRN_OUT_SONAR);
     retValue = SONAR_OVER_LIMIT_DISTANCE;
   }
       

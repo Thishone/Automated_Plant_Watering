@@ -10,8 +10,16 @@
 #include "debugLog.h"
 #include "sensors.h"
 
+//for testing
+extern float soilMoisturePercentage;
+extern float old_soilMoisturePercentage;
+
+#ifdef TEST_CODE
+extern boolean testError;
+#endif
+
 extern boolean learningPotSize;
-extern boolean regularWatering;
+extern boolean normalWatering;
 
 const byte numChars = 30;
 char receivedChars[numChars];
@@ -92,7 +100,10 @@ void ezScrnSetup(void)
 
   // add an area for text from the light to be displayed
   Serial.println(F("<+tOut, name=outLight, size=16x2, tleft=2x33, bg=yellow, fg=black>"));
-
+#ifdef TEST_CODE
+    // add a button that will operate an Learning
+  Serial.println(F("<+btn, name=Test, size=11x2, tleft=24x33, bg=black, fg=orange>"));
+#endif 
   // add an area for text from the sonar distace to be displayed
   Serial.println(F("<+tOut, name=outOverflow, size=24x2, tleft=2x36, bg=yellow, fg=black>"));
 
@@ -121,8 +132,13 @@ void updateButton() {
   if (strcmp(buttonValue, "Learning") == 0) {
     learningPotSize = !learningPotSize;
   } else if (strcmp(buttonValue, "Normal") == 0){
-    regularWatering =!regularWatering;
+    normalWatering =!normalWatering;
+  } 
+#ifdef TEST_CODE
+  else if (strcmp(buttonValue, "Test") == 0){
+    testError =!testError;
   }
+#endif
 }
 
 /////////////////////////////////////////////////////////////////
@@ -154,12 +170,21 @@ void replyToEzGUI(void)
   Serial.print("<-outSlidMax, ");
   Serial.print("Moisture Max Value: ");
   Serial.print(sliderMaxValue);
+  //for testing
+#ifdef TEST_CODE
+  soilMoisturePercentage = sliderMaxValue;
+#endif
   setMaxMoistureValue(sliderMaxValue);
   Serial.print(">");
 
   Serial.print("<-outSlidMin, ");
   Serial.print("Moisture Min Value: ");
   Serial.print(sliderMinValue);
+
+  //for testing
+#ifdef TEST_CODE
+  old_soilMoisturePercentage = sliderMinValue;
+#endif
   setMinMoistureValue(sliderMinValue);
   Serial.print(">");    
 }

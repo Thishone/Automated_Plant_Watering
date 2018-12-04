@@ -80,7 +80,7 @@ boolean alertWaterIsLow(void)
 {
   boolean retValue = false;
   if (snar_status == SONAR_OVER_LIMIT_DISTANCE){
-    debugLog("Turn off Water Pump because the tank water is low!!!", NONE_DATA, NULL, SCRN_OUTA);
+    debugLog("Turn off Water Pump because the water tank is low!!!", NONE_DATA, NULL, SCRN_OUTA);
     retValue = true;
   }
   return retValue;
