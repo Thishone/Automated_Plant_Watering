@@ -216,7 +216,7 @@ void supplyWater(void)
 void initVariabls(void)
 {
   //debugLog("Init Variabls ", NONE_DATA, NULL, SCRN_OUTA);
-  normalWatering = false;
+  //normalWatering = false;
   waitWateringTime = 0;
   wait1MinuteAfterWatering = 0;
   underMin = false;
@@ -273,9 +273,12 @@ void ReadOverflow(void)
   
   ReadOverflowValue = analogRead(ReadOverflowPin);     // read the input pin
 
-  soilOverflowRawVal = MAX_MOISTURE_INTEGER_VOLT_VALUE - ReadOverflowValue;
 
-  if (soilOverflowRawVal < MAX_OVERFLOW_VALUE)
+  soilOverflowRawVal = MAX_OVERFLOW_INTEGER_VOLT_VALUE - ReadOverflowValue;
+  
+  //debugLog("soilOverflowRawVal: ", soilOverflowRawVal, NULL, SCRN_OUTA);
+
+  if (soilOverflowRawVal <= MAX_OVERFLOW_INTEGER_VOLT_VALUE)
   {
     soilOverflowPercentage = ((float)soilOverflowRawVal / MAX_OVERFLOW_VALUE)*100.0;
 #ifdef TEST_CODE

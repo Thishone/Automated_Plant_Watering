@@ -31,7 +31,7 @@ long duration;
 //#define LIMIT_DISTANCE       15
 #define FULL_WATER_LEVEL     13//20
 #define HIGH_WATER_LEVEL     9//10
-#define LOW_WATER_LEVEL      3//5
+#define LOW_WATER_LEVEL      5
 #define SPEED_SOUND 0.034
 
 /////////////////////////////////////////////////////////////////
@@ -74,28 +74,29 @@ sonar_st sonar(void)
   sonarDistance = duration*SPEED_SOUND/2;
 
   measureDistance = FULL_WATER_LEVEL - sonarDistance;
-#ifdef TEST_CODE
-  measureDistance = 10;
-  if (testError == true){
-    measureDistance = 2;
+  if (measureDistance > 0){
+  #ifdef TEST_CODE
+    measureDistance = 10;
+    if (testError == true){
+      measureDistance = 2;
+    }
+  #endif
+    if (measureDistance > HIGH_WATER_LEVEL){
+      // GREEN
+      //debugLog("Sonar Distance(cm: Green): ", sonarDistance, NULL, SCRN_OUT_SONAR);
+      debugLog("Water Tank(cm: Green): ", measureDistance, NULL, SCRN_OUT_SONAR);
+      retValue = SONAR_WITHIN_LIMIT_DISTANCE;
+    } else if ((HIGH_WATER_LEVEL >= measureDistance) && (measureDistance > LOW_WATER_LEVEL))  {
+      // YELLOW
+      //debugLog("Sonar Distance(cm: Yellow): ", sonarDistance, NULL, SCRN_OUT_SONAR);
+      debugLog("Water Tank(cm: Yellow): ", measureDistance, NULL, SCRN_OUT_SONAR);
+      retValue = SONAR_WITHIN_LIMIT_DISTANCE;
+    } else if (measureDistance <= LOW_WATER_LEVEL) {
+      // Red
+      //debugLog("Sonar Distance(cm: Red): ", sonarDistance, NULL, SCRN_OUT_SONAR);
+      debugLog("Water Tank(cm: Red): ", measureDistance, NULL, SCRN_OUT_SONAR);
+      retValue = SONAR_OVER_LIMIT_DISTANCE;
+    }
   }
-#endif
-  if (measureDistance > HIGH_WATER_LEVEL){
-    // GREEN
-    //debugLog("Sonar Distance(cm: Green): ", sonarDistance, NULL, SCRN_OUT_SONAR);
-    debugLog("Water Tank(cm: Green): ", measureDistance, NULL, SCRN_OUT_SONAR);
-    retValue = SONAR_WITHIN_LIMIT_DISTANCE;
-  } else if ((HIGH_WATER_LEVEL >= measureDistance) && (measureDistance > LOW_WATER_LEVEL))  {
-    // YELLOW
-    //debugLog("Sonar Distance(cm: Yellow): ", sonarDistance, NULL, SCRN_OUT_SONAR);
-    debugLog("Water Tank(cm: Yellow): ", measureDistance, NULL, SCRN_OUT_SONAR);
-    retValue = SONAR_WITHIN_LIMIT_DISTANCE;
-  } else if (measureDistance <= LOW_WATER_LEVEL) {
-    // Red
-    //debugLog("Sonar Distance(cm: Red): ", sonarDistance, NULL, SCRN_OUT_SONAR);
-    debugLog("Water Tank(cm: Red): ", measureDistance, NULL, SCRN_OUT_SONAR);
-    retValue = SONAR_OVER_LIMIT_DISTANCE;
-  }
-      
   return retValue;
 }

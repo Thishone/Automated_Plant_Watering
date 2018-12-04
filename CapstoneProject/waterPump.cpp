@@ -13,7 +13,7 @@
 
 extern sonar_st snar_status;
 
-const int waterPumpPin =  12;// the number of the water pump pin
+const int waterPumpPin =  2;// the number of the water pump pin
 
 /////////////////////////////////////////////////////////////////
 // FUNCTION      : waterPumpSetup()
